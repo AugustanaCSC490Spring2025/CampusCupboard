@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="action-buttons">
+                    <a href="{{ url_for('inventory') }}" class="btn btn-inventory">
+                        <h2>INVENTORY FEED</h2>
+                        <p>Live updated feed for in-stocked food items.</p>
+                    </a>
+                    <a href="{{ url_for('volunteer') }}" class="btn btn-volunteer">
+                        <h2>VOLUNTEER</h2>
+                        <p>Sign up for volunteer, hours of operation.</p>
+                    </a>
+                </div>
+                <div class="meet-team">
+                    <h2>Meet the team</h2>
+                    <p>Meet the team behind this project.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
