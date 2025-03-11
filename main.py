@@ -10,7 +10,7 @@ def index():
 
 @app.route('/inventory')
 def inventory():
-    return "Inventory Feed Page" # Placeholder for inventory implementation
+    return render_template('inventoryFeed.html') # Placeholder for inventory implementation
 
 @app.route('/volunteer')
 def volunteer():
