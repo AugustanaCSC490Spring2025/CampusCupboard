@@ -1,0 +1,67 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container about-section">
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-8">
+            <h1 class="text-center mb-4">About Campus Cupboard</h1>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">Our Mission</h2>
+                    <p class="card-text">
+                        The Augustana College Campus Cupboard provides non-perishable food items and hygiene products to the student body. 
+                        All Augustana students are welcome to take items from the cupboard.    
+                    </p>
+                    <p class="card-text">
+                        We are dedicated to fighting food insecurity among our student community. 
+                        We provide free food and essential items to all Augustana students in need, no questions asked.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">How It Works</h2>
+                    <p class="card-text">
+                        Students can visit the Campus Cupboard during regular hours to select items they need. 
+                        Our inventory is updated regularly and supported by donations from the community and local partners.
+                    </p>
+                    <p class="card-text">
+                        Check our <a href="{{ url_for('inventory') }}">Inventory Feed</a> to see what's currently available.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">Get Involved</h2>
+                    <p class="card-text">
+                        There are many ways to support the Campus Cupboard:
+                    </p>
+                    <ul>
+                        <li>Volunteer your time</li>
+                        <li>Donate food or essential items</li>
+                        <li>Spread the word to students who might need our services</li>
+                    </ul>
+                    <p class="card-text">
+                        <a href="{{ url_for('volunteer') }}" class="btn btn-volunteer mt-2">Volunteer Today</a>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">Contact Us</h2>
+                    <p class="card-text">
+                        Located in: Bahl's Leadership Center's Basement<br>
+                        Hours: Monday-Thursday, 3:30pm-5:30pm<br>
+                        Email: augiecampuscupboard@augustana.edu<br>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

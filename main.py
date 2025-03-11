@@ -16,9 +16,9 @@ def inventory():
 def volunteer():
     return "Volunteer Page" # Placeholder for volunteer implementation
 
-@app.route('/about')
+@app.route('/aboutus')
 def about():
-    return "About Us Page" # Placeholder for about page implementation
+    return render_template('aboutus.html') # Placeholder for about page implementation
 
 @app.route('/admin')
 def admin():
