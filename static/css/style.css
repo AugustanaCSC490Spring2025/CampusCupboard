@@ -6,6 +6,9 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     min-height: 100vh;
+    background: url('/static/images/old_main.jpg') no-repeat center center;
+    background-size: cover;
+    color: white;
 }
 
 .navbar {
@@ -21,8 +24,11 @@ body {
 }
 
 .hero-section {
+<<<<<<< HEAD
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-                url('https://th.bing.com/th/id/OIP.DUn1TYreqaEqKHGZwBViYQHaD4?rs=1&pid=ImgDetMain');
+                url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+=======
+>>>>>>> afc806a1857f91ce4d461b68dac28ce2d1405523
     background-size: cover;
     background-position: center;
     min-height: calc(100vh - 76px);
@@ -30,7 +36,9 @@ body {
     align-items: center;
     padding: 4rem 0;
 }
-
+/* .hero-section img {
+    display: none;
+} */
 .action-buttons {
     display: flex;
     flex-direction: column;
@@ -82,6 +90,33 @@ body {
 
 .meet-team p {
     font-size: 1.1rem;
+}
+
+/* About page styles */
+.about-section {
+    padding: 3rem 0;
+}
+
+.about-section h1 {
+    color: var(--augie-blue);
+    margin-bottom: 2rem;
+}
+
+.about-section .card {
+    border-radius: 15px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.about-section .card-title {
+    color: var(--augie-blue);
+    font-weight: bold;
+}
+
+.about-section .btn-volunteer {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
 }
 
 @media (min-width: 768px) {
