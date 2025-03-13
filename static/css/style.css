@@ -24,11 +24,6 @@ body {
 }
 
 .hero-section {
-<<<<<<< HEAD
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-                url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
-=======
->>>>>>> afc806a1857f91ce4d461b68dac28ce2d1405523
     background-size: cover;
     background-position: center;
     min-height: calc(100vh - 76px);
@@ -119,6 +114,59 @@ body {
     padding: 0.5rem 1.5rem;
 }
 
+.msg-container {
+    background: var(--augie-blue);
+    padding: 1rem;
+    border-radius: 10px;
+    margin: 2rem 0;
+}
+
+.msg-inner-container {
+    background: darkgray;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+#messageForm {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem; /* Add margin-top to separate the form from the message list */
+}
+
+#messageInput {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#messageList {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 1rem; /* Add margin-bottom to separate the message list from the form */
+}
+
+#messageList li {
+    background: white;
+    color: black;
+    padding: 0.5rem;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    position: relative; /* Position relative to place timestamp */
+}
+
+.message-text {
+    margin-bottom: 0.5rem;
+}
+
+.message-timestamp {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.8rem;
+    color: gray;
+}
+
 @media (min-width: 768px) {
     .action-buttons {
         flex-direction: row;
@@ -130,3 +178,4 @@ body {
         max-width: 400px;
     }
 }
+

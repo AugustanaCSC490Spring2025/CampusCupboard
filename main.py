@@ -1,16 +1,32 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, redirect, render_template, request, url_for
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
+
+# In-memory storage for messages (for demonstration purposes)
+messages = []
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/inventory')
+@app.route('/inventory', methods=['GET', 'POST'])
 def inventory():
-    return render_template('inventoryFeed.html') # Placeholder for inventory implementation
+    if request.method == 'POST':
+        message = request.form['message']
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        messages.append({'text': message, 'timestamp': timestamp})
+        return redirect(url_for('inventory'))
+    return render_template('inventoryFeed.html', messages=messages)
+
+@app.route('/add_message', methods=['POST'])
+def add_message():
+    message = request.form['message']
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    messages.append({'text': message, 'timestamp': timestamp})
+    return redirect(url_for('inventory'))
 
 @app.route('/volunteer')
 def volunteer():
