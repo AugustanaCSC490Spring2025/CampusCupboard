@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ID Scanning</title>
+        <script>
+            window.onload = function() {
+                document.getElementById("inputBox").focus();
+            };
+        </script>
+    </head>
+    <body>
+        <h2>Student ID and weight checkout </a>
+        <script>
+            // Add timestamp parameter to prevent caching when viewing history
+            document.getElementById('swipeHistoryLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.open('/id_swipes?t=' + new Date().getTime(), '_blank');
+            });
+        </script>
+        <h2>Enter Student ID to continue!</h2>
+        <!--<form>
+            <label for="weightInputBox">Enter weight:</label>
+            <input type="text" id="weightInputBox" name="weightInputBox">
+        </form> -->
+        
+        <form method="POST">
+            <label for="inputBox">Scan or Enter ID:</label>
+            <input type="text" id="inputBox" name="inputBox">
+            <button type="submit">Continue</button>
+        </form>
+    </body>
+</html>
