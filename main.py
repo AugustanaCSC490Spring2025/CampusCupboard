@@ -71,7 +71,9 @@ def IDscan():
 
     return render_template('id_scan.html')
 
-
+@app.route('/student_input')
+def student_input():
+    return render_template('student_input.html') # Placeholder for student input page implementation
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
