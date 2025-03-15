@@ -36,14 +36,20 @@
             <div class="text-center mb-3">
                 <img src="{{ url_for('static', filename='images/Augie_A.png') }}" alt="Campus Cupboard" style="max-width: 150px;">
             </div>
-            <form method="post">
+            <form method="post" onsubmit="return validateForm()">
                 <div class="mb-3">
                     <label for="studentID" class="form-label">Student ID</label>
-                    <input type="text" class="form-control" id="studentID" name="studentID" required>
+                    <input type="text" class="form-control" id="studentID" name="studentID" required oninput="checkStudentID(); validateStudentID();">
+                    <div class="invalid-feedback">
+                        Please enter a valid student ID.
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="poundsTaken" class="form-label">Pounds taken</label>
-                    <input type="number" class="form-control" id="poundsTaken" name="poundsTaken" required>
+                    <input type="number" class="form-control" id="poundsTaken" name="poundsTaken" required disabled readonly min="1" max="1000">
+                    <div class="invalid-feedback">
+                        Please enter a valid number of pounds between 1 and 1000.
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">SUBMIT</button>
             </form>
@@ -52,5 +58,48 @@
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script>
+        function checkStudentID() {
+            var studentID = document.getElementById('studentID').value;
+            var poundsTaken = document.getElementById('poundsTaken');
+            if (studentID.trim() !== '') {
+                poundsTaken.disabled = false;
+                poundsTaken.readOnly = false;
+            } else {
+                poundsTaken.disabled = true;
+                poundsTaken.readOnly = true;
+            }
+        }
+
+        function validateStudentID() {
+            var studentID = document.getElementById('studentID');
+            studentID.value = studentID.value.replace(/\D/g, ''); // Remove non-numeric characters
+        }
+
+        function validateForm() {
+            var studentID = document.getElementById('studentID');
+            var poundsTaken = document.getElementById('poundsTaken');
+            var poundsValue = parseFloat(poundsTaken.value);
+
+            if (isNaN(studentID.value) || studentID.value.trim() === '') {
+                studentID.setCustomValidity("Please enter a valid student ID.");
+                studentID.reportValidity();
+                return false;
+            } else {
+                studentID.setCustomValidity("");
+            }
+
+            if (isNaN(poundsValue) || poundsValue < 1 || poundsValue > 1000) {
+                poundsTaken.setCustomValidity("Please enter a valid number of pounds between 1 and 1000.");
+                poundsTaken.reportValidity();
+                return false;
+            } else {
+                poundsTaken.setCustomValidity("");
+            }
+
+            return true;
+        }
+    </script>
 </body>
 </html>
