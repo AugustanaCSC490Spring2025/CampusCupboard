@@ -9,9 +9,7 @@ app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
 messages = []  # List to store messages
 
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres: yIf7EOylTW2vKJK5@nobly-intrigued-dassie.data-1.use1.tembo.io:5432/postgres'
-
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -29,7 +27,7 @@ class StudentInput(db.Model):
     __tablename__ = 'student_inputs'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     student_id = db.Column(db.String, nullable=False)
-    pounds_taken = db.Column(db.Integer, nullable=False)
+    pounds_taken = db.Column(db.Float, nullable=False) 
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
 
 with app.app_context():
@@ -83,7 +81,7 @@ def student_input():
     if request.method == 'POST':
         student_id = request.form.get('studentID')
         pounds_taken = request.form.get('poundsTaken')
-        
+        pounds_taken = float(pounds_taken)
        
         new_input = StudentInput(student_id=student_id, pounds_taken=pounds_taken)
         db.session.add(new_input)

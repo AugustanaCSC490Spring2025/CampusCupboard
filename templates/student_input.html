@@ -34,7 +34,7 @@
     <div class="container d-flex justify-content-center align-items-center" style="height: 80vh;">
         <div class="card p-4 shadow" style="width: 350px;">
             <div class="text-center mb-3">
-                <img src="{{ url_for('static', filename='images/Augie_A.png') }}" alt="Campus Cupboard" style="max-width: 150px;">
+                <img src="{{ url_for('static', filename='images/Augie_A.png') }}" alt="Augustana College Logo" style="max-width: 150px;">
             </div>
             <form method="post" onsubmit="return validateForm()">
                 <div class="mb-3">
@@ -46,7 +46,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="poundsTaken" class="form-label">Pounds taken</label>
-                    <input type="number" class="form-control" id="poundsTaken" name="poundsTaken" required disabled readonly min="1" max="1000">
+                    <input type="number" class="form-control" id="poundsTaken" name="poundsTaken" required disabled readonly min="1" max="1000" step="0.01">
                     <div class="invalid-feedback">
                         Please enter a valid number of pounds between 1 and 1000.
                     </div>
