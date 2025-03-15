@@ -25,6 +25,13 @@ class IDSwipe(db.Model):
     scanned_id = db.Column(db.String, nullable=False)
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))  
 
+class StudentInput(db.Model):
+    __tablename__ = 'student_inputs'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    student_id = db.Column(db.String, nullable=False)
+    pounds_taken = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
+
 with app.app_context():
     db.create_all()
 
@@ -71,9 +78,19 @@ def IDscan():
 
     return render_template('id_scan.html')
 
-@app.route('/student_input')
+@app.route('/student_input', methods=['GET', 'POST'])
 def student_input():
-    return render_template('student_input.html') # Placeholder for student input page implementation
-    
+    if request.method == 'POST':
+        student_id = request.form.get('studentID')
+        pounds_taken = request.form.get('poundsTaken')
+        
+       
+        new_input = StudentInput(student_id=student_id, pounds_taken=pounds_taken)
+        db.session.add(new_input)
+        db.session.commit()
+        
+        return redirect(url_for('student_input'))
+    return render_template('student_input.html')  
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
