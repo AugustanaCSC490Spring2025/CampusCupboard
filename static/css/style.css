@@ -24,6 +24,8 @@ body {
 }
 
 .hero-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
     background-size: cover;
     background-position: center;
     min-height: calc(100vh - 76px);
@@ -179,3 +181,6 @@ body {
     }
 }
 
+.form-label {
+    color:black
+}
