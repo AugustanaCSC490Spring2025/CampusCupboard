@@ -30,6 +30,14 @@ class StudentInput(db.Model):
     pounds_taken = db.Column(db.Float, nullable=False) 
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
 
+class Volunteer(db.Model):
+    __tablename__ = 'volunteers'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, nullable=False)
+    shift = db.Column(db.String, nullable=False)
+    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
+
 with app.app_context():
     db.create_all()
 
@@ -55,7 +63,7 @@ def add_message():
 
 @app.route('/volunteer')
 def volunteer():
-    return "Volunteer Page" # Placeholder for volunteer implementation
+    return render_template('volunteer.html')  # Render the volunteer page
 
 @app.route('/aboutus')
 def about():
@@ -89,6 +97,24 @@ def student_input():
         
         return redirect(url_for('student_input'))
     return render_template('student_input.html')  
+
+@app.route('/calendar')
+def calendar():
+    return render_template('calendar.html')
+
+@app.route('/volunteer_signup', methods=['GET', 'POST'])
+def volunteer_signup():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        shift = request.form.get('shift')
+        
+        new_volunteer = Volunteer(name=name, email=email, shift=shift)
+        db.session.add(new_volunteer)
+        db.session.commit()
+        
+        return redirect(url_for('volunteer_signup'))
+    return render_template('volunteer_signup.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
