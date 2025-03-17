@@ -63,7 +63,7 @@
         function checkStudentID() {
             var studentID = document.getElementById('studentID').value;
             var poundsTaken = document.getElementById('poundsTaken');
-            if (studentID.trim() !== '') {
+            if (studentID.trim() !== '' && (studentID.length === 7 || studentID.length >= 13)) {
                 poundsTaken.disabled = false;
                 poundsTaken.readOnly = false;
             } else {
