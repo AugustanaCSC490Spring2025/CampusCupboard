@@ -89,10 +89,10 @@ def IDscan():
 @app.route('/student_input', methods=['GET', 'POST'])
 def student_input():
     if request.method == 'POST':
-        student_id = request.form.get('studentID').strip()[2:-6]
+        student_id = request.form.get('studentID')
         pounds_taken = request.form.get('poundsTaken')
         pounds_taken = float(pounds_taken)
-       
+        
         new_input = StudentInput(student_id=student_id, pounds_taken=pounds_taken)
         db.session.add(new_input)
         db.session.commit()
