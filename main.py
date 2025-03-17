@@ -17,12 +17,14 @@ db = SQLAlchemy(app)
 CENTRAL_TZ = ZoneInfo("America/Chicago")
 UTC_TZ = ZoneInfo("UTC")
 
+#reminder to take out IDSwipe class and keep StudentInput
 class IDSwipe(db.Model):
     __tablename__ = 'id_swipes'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     scanned_id = db.Column(db.String, nullable=False)
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))  
 
+#class to make table for id swipe
 class StudentInput(db.Model):
     __tablename__ = 'student_inputs'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -90,7 +92,7 @@ def student_input():
         student_id = request.form.get('studentID')
         pounds_taken = request.form.get('poundsTaken')
         pounds_taken = float(pounds_taken)
-       
+        
         new_input = StudentInput(student_id=student_id, pounds_taken=pounds_taken)
         db.session.add(new_input)
         db.session.commit()
