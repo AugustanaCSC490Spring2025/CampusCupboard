@@ -25,7 +25,7 @@ body {
 
 .hero-section {
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-                url('/static/images/old_main.jpg');
+                url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
     background-size: cover;
     background-position: center;
     min-height: calc(100vh - 76px);
@@ -33,9 +33,7 @@ body {
     align-items: center;
     padding: 4rem 0;
 }
-/* .hero-section img {
-    display: none;
-} */
+
 .action-buttons {
     display: flex;
     flex-direction: column;
@@ -92,6 +90,7 @@ body {
 /* About page styles */
 .about-section {
     padding: 3rem 0;
+    color: black; /* Ensure text color is black */
 }
 
 .about-section h1 {
@@ -109,6 +108,10 @@ body {
 .about-section .card-title {
     color: var(--augie-blue);
     font-weight: bold;
+}
+
+.about-section .card-text {
+    color: black; 
 }
 
 .about-section .btn-volunteer {
@@ -182,5 +185,5 @@ body {
 }
 
 .form-label {
-    color:black
+    color: black;
 }
