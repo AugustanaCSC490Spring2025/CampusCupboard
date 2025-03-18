@@ -7,10 +7,9 @@ from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 load_dotenv()
 
-from dotenv import load_dotenv
-load_dotenv()
-
 app = Flask(__name__, static_folder='static')
+app.config['UPLOAD_FOLDER'] = os.path.join('static', 'images')
+
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
 messages = []  # List to store messages
@@ -66,6 +65,28 @@ def add_message():
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     messages.append({'text': message, 'timestamp': timestamp})
     return redirect(url_for('inventory'))
+
+ALLOWED_EXTENSIONS = {'png', 'heic', 'jpg', 'jpeg'}
+ 
+def allowed_file(filename):
+     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+ 
+@app.route('/upload_image', methods=['POST'])
+def upload_image():
+     if 'images' not in request.files:
+         return "No file part", 400
+ 
+     files = request.files.getlist('images')  # Get multiple files
+     for file in files:
+         if file and allowed_file(file.filename):
+             file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+             file.save(file_path)
+             uploaded_images.append(file.filename)  # Add the filename to the list
+         else:
+             return f"File type not allowed: {file.filename}", 400
+ 
+     return redirect(url_for('inventory'))
+
 
 @app.route('/volunteer')
 def volunteer():
