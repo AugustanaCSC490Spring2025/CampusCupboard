@@ -7,11 +7,14 @@ from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 load_dotenv()
 
-app = Flask(__name__)
+from dotenv import load_dotenv
+load_dotenv()
+
+app = Flask(__name__, static_folder='static')
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
-
 messages = []  # List to store messages
+uploaded_images = []  # List to store all uploaded image filenames
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -53,7 +56,8 @@ def inventory():
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         messages.append({'text': message, 'timestamp': timestamp})
         return redirect(url_for('inventory'))
-    return render_template('inventoryFeed.html', messages=messages)
+    # Reverse the uploaded_images list to show the newest images first
+    return render_template('inventoryFeed.html', messages=messages, uploaded_images=reversed(uploaded_images))
 
 #message addition route
 @app.route('/add_message', methods=['POST'])
@@ -63,7 +67,6 @@ def add_message():
     messages.append({'text': message, 'timestamp': timestamp})
     return redirect(url_for('inventory'))
 
-#volunteer page route
 @app.route('/volunteer')
 def volunteer():
     return render_template('volunteer.html')

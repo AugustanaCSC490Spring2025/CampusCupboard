@@ -9,6 +9,19 @@ body {
     background: url('/static/images/old_main.jpg') no-repeat center center;
     background-size: cover;
     color: black;
+    position: relative; /* Ensure the pseudo-element is positioned relative to the body */
+    z-index: 0; /* Set the stacking context */
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* White overlay with 50% opacity */
+    z-index: -1; /* Place the overlay behind the content */
 }
 
 .navbar {
@@ -24,8 +37,6 @@ body {
 }
 
 .hero-section {
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-                url('/static/images/old_main.jpg');
     background-size: cover;
     background-position: center;
     min-height: calc(100vh - 76px);
@@ -70,6 +81,22 @@ body {
 
 .btn-volunteer {
     background-color: var(--augie-yellow);
+}
+
+.btn-update {
+    background-color: var(--augie-yellow); /* Yellow background */
+    color: black; /* Black text */
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-update:hover {
+    background-color: #e5b800; /* Slightly darker yellow on hover */
 }
 
 .meet-team {
@@ -120,10 +147,13 @@ body {
 }
 
 .msg-container {
-    background: var(--augie-blue);
-    padding: 1rem;
+    background: var(--augie-blue); /* Set background color to blue */
+    padding: 1.5rem; /* Add padding inside the message container */
     border-radius: 10px;
-    margin: 2rem 0;
+    color: white; /* Ensure text is readable */
+    overflow-y: auto; /* Add scroll if content overflows */
+    max-height: 80vh; /* Optional: Limit height */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for better visibility */
 }
 
 .msg-inner-container {
@@ -172,6 +202,108 @@ body {
     color: gray;
 }
 
+.form-label {
+    color: black;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Message container, photo container */
+    gap: 2rem; /* Space between the containers */
+    align-items: start; /* Align the top of all containers */
+    padding: 2rem; /* Add padding around the grid container */
+}
+
+.photo-container {
+    position: relative; /* Ensure elements inside can be positioned relative to the container */
+    background: var(--augie-blue); /* Set background color to blue */
+    padding: 1.5rem; /* Add padding inside the photo container */
+    border-radius: 10px;
+    color: white; /* Ensure text is readable */
+    text-align: center;
+    overflow-y: auto; /* Add scroll if content overflows */
+    max-height: 80vh; /* Optional: Limit height */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for better visibility */
+}
+
+.photo-title {
+    text-align: center; /* Center the text horizontally */
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 1rem; /* Add spacing below the title */
+}
+
+.uploaded-images {
+    display: flex;
+    flex-wrap: wrap; /* Allow images to wrap to the next line */
+    gap: 1rem; /* Add spacing between images */
+    justify-content: center; /* Center the images */
+}
+
+.uploaded-images img {
+    width: 100%; /* Make images responsive */
+    max-width: 100%; /* Prevent images from exceeding their container */
+    border-radius: 10px;
+}
+
+.sticky-update {
+    position: fixed; /* Make the button fixed to the viewport */
+    top: 1rem; /* Position it 1rem from the top of the viewport */
+    left: 1rem; /* Position it 1rem from the left of the viewport */
+    background-color: var(--augie-yellow); /* Yellow background */
+    color: black; /* Black text */
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 1000; /* Ensure the button is above all other elements */
+}
+
+.sticky-update:hover {
+    background-color: #e5b800; /* Slightly darker yellow on hover */
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Photos take 2/3, messages take 1/3 */
+    gap: 1rem; /* Space between the photos and the message container */
+    align-items: start; /* Align items at the top */
+}
+
+.photo-msg-container {
+    background: var(--augie-yellow); /* Set background color to yellow */
+    padding: 1rem;
+    border-radius: 10px;
+    color: black; /* Ensure text is readable */
+    overflow-y: auto; /* Add scroll if content overflows */
+    max-height: 80vh; /* Optional: Limit height */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for better visibility */
+}
+
+.update-button {
+    position: absolute; /* Position the button relative to the photo-container */
+    top: 1rem; /* Position it 1rem from the top of the photo-container */
+    left: 1.5rem; /* Match the padding of the .photo-container or .uploaded-images */
+    background-color: var(--augie-yellow); /* Yellow background */
+    color: black; /* Black text */
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 10; /* Ensure the button is above other elements */
+}
+
+.update-button:hover {
+    background-color: #e5b800; /* Slightly darker yellow on hover */
+}
+
 @media (min-width: 768px) {
     .action-buttons {
         flex-direction: row;
@@ -184,6 +316,15 @@ body {
     }
 }
 
-.form-label {
-    color: black;
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: 1fr; /* Stack containers vertically on smaller screens */
+        gap: 1rem; /* Reduce gap for smaller screens */
+    }
+
+    .msg-container,
+    .photo-container {
+        max-height: none; /* Remove height limit for smaller screens */
+    }
 }
+
