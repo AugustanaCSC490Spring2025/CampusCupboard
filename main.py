@@ -4,10 +4,14 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
+# Define the upload folder
+app.config['UPLOAD_FOLDER'] = os.path.join('static', 'images')
+
 messages = []  # List to store messages
+uploaded_images = []  # List to store all uploaded image filenames
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres: yIf7EOylTW2vKJK5@nobly-intrigued-dassie.data-1.use1.tembo.io:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -54,13 +58,35 @@ def inventory():
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         messages.append({'text': message, 'timestamp': timestamp})
         return redirect(url_for('inventory'))
-    return render_template('inventoryFeed.html', messages=messages)
+    # Reverse the uploaded_images list to show the newest images first
+    return render_template('inventoryFeed.html', messages=messages, uploaded_images=reversed(uploaded_images))
 
 @app.route('/add_message', methods=['POST'])
 def add_message():
     message = request.form['message']
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     messages.append({'text': message, 'timestamp': timestamp})
+    return redirect(url_for('inventory'))
+
+ALLOWED_EXTENSIONS = {'png', 'heic', 'jpg', 'jpeg'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload_image', methods=['POST'])
+def upload_image():
+    if 'images' not in request.files:
+        return "No file part", 400
+
+    files = request.files.getlist('images')  # Get multiple files
+    for file in files:
+        if file and allowed_file(file.filename):
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            file.save(file_path)
+            uploaded_images.append(file.filename)  # Add the filename to the list
+        else:
+            return f"File type not allowed: {file.filename}", 400
+
     return redirect(url_for('inventory'))
 
 @app.route('/volunteer')

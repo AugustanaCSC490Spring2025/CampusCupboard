@@ -18,3 +18,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+function triggerFileInput() {
+    const fileInput = document.getElementById('imageUpload');
+    fileInput.click(); // Trigger the hidden file input
+
+    fileInput.addEventListener('change', function () {
+        // Automatically submit the form when a file is selected
+        document.getElementById('uploadForm').submit();
+    });
+}

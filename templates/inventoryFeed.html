@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="main-section">
+<div class="grid-container">
     <div class="msg-container">
         <div class="msg-inner-container">
             <ul id="messageList">
@@ -19,10 +19,39 @@
         </div>
     </div>
     <div class="photo-container">
-        <div class>
-
+        <h1 class="photo-title">Live Inventory Feed</h1>
+        <button type="button" class="update-button" onclick="triggerFileInput()">UPDATE</button>
+        <div class="photo-grid">
+            <div class="uploaded-images">
+                {% if uploaded_images %}
+                {% for image in uploaded_images %}
+                <img src="{{ url_for('static', filename='images/' + image) }}" alt="Uploaded Image" style="max-width: 100%; border-radius: 10px; margin-bottom: 1rem;">
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="photo-msg-container">
+                <h2>Messages</h2>
+                <ul id="additionalMessageList">
+                    <!-- Add additional messages here -->
+                    <li>lala</li>
+                    <li>lolo</li>
+                </ul>
+            </div>
         </div>
-
+        <form id="uploadForm" method="POST" action="{{ url_for('upload_image') }}" enctype="multipart/form-data">
+            <input type="file" name="images" id="imageUpload" accept=".png, .heic, .jpg, .jpeg" style="display: none;" multiple required>
+        </form>
     </div>
 </div>
+<script>
+    function triggerFileInput() {
+        const fileInput = document.getElementById('imageUpload');
+        fileInput.click(); // Trigger the hidden file input
+
+        fileInput.addEventListener('change', function () {
+            // Automatically submit the form when a file is selected
+            document.getElementById('uploadForm').submit();
+        });
+    }
+</script>
 {% endblock %}
