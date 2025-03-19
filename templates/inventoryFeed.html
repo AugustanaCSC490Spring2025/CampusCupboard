@@ -38,6 +38,7 @@
                     <img src="{{ url_for('static', filename='images/' + image.filename) }}" alt="Uploaded Image">
                     <div class="image-description">
                         <p>{{ image.description }}</p>
+                        <small class="image-timestamp">Uploaded on: {{ image.timestamp }}</small>
                     </div>
                 </div>
                 {% endfor %}

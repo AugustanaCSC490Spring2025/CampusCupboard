@@ -77,8 +77,10 @@ def upload_image():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # Add the current timestamp
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         # Prepend the new image to the list
-        uploaded_images.insert(0, {'filename': filename, 'description': description})
+        uploaded_images.insert(0, {'filename': filename, 'description': description, 'timestamp': timestamp})
 
     return redirect(url_for('inventory'))
 

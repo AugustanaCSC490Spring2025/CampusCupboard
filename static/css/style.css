@@ -343,6 +343,13 @@ body::before {
     padding: 0 1rem; /* Add padding for better spacing */
 }
 
+.image-timestamp {
+    font-size: 0.8rem;
+    color: gray;
+    display: block;
+    margin-top: 0.5rem;
+}
+
 .hidden {
     display: none; /* Hide elements with the 'hidden' class */
 }
