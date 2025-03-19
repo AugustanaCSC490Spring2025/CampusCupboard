@@ -14,7 +14,8 @@
             </ul>
             <form id="messageForm" method="POST" action="{{ url_for('inventory') }}">
                 <input type="text" name="message" id="messageInput" placeholder="Message..." required>
-                <button type="submit">Submit</button>
+                <!-- Use an image as the submit button -->
+                <input type="image" src="{{ url_for('static', filename='images/submit_button.jpg') }}" alt="Submit" class="submit-button">
             </form>
         </div>
     </div>

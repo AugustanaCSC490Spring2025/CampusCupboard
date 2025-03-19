@@ -370,6 +370,17 @@ body::before {
     background-color: #e5b800;
 }
 
+.submit-button {
+    width: 50px; /* Adjust the size of the image */
+    height: 50px; /* Adjust the size of the image */
+    border: none; /* Remove any default borders */
+    cursor: pointer; /* Change the cursor to a pointer on hover */
+}
+
+.submit-button:hover {
+    opacity: 0.8; /* Add a hover effect */
+}
+
 @media (min-width: 768px) {
     .action-buttons {
         flex-direction: row;

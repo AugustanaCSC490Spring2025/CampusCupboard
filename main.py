@@ -61,14 +61,6 @@ def inventory():
     # Pass both messages and uploaded images to the template
     return render_template('inventoryFeed.html', messages=messages, uploaded_images=uploaded_images)
 
-#message addition route
-@app.route('/add_message', methods=['POST'])
-def add_message():
-    message = request.form['message']
-    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    messages.append({'text': message, 'timestamp': timestamp})
-    return redirect(url_for('inventory'))
-
 ALLOWED_EXTENSIONS = {'png', 'heic', 'jpg', 'jpeg'}
  
 def allowed_file(filename):
