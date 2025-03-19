@@ -224,6 +224,7 @@ body::before {
     overflow-y: auto; /* Add scroll if content overflows */
     max-height: 80vh; /* Optional: Limit height */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for better visibility */
+    width: 100%; /* Ensure the photo-container spans the full width */
 }
 
 .photo-title {
@@ -235,16 +236,13 @@ body::before {
 }
 
 .uploaded-images {
-    display: flex;
-    flex-wrap: wrap; /* Allow images to wrap to the next line */
+    display: grid; /* Use CSS Grid for layout */
+    grid-template-columns: 1fr; /* Single column layout */
     gap: 1rem; /* Add spacing between images */
-    justify-content: center; /* Center the images */
-}
-
-.uploaded-images img {
-    width: 100%; /* Make images responsive */
-    max-width: 100%; /* Prevent images from exceeding their container */
-    border-radius: 10px;
+    width: 100%; /* Ensure the uploaded-images container spans the full width */
+    margin: 0; /* Remove any default margins */
+    padding: 0; /* Remove any default padding */
+    grid-column: 1 / -1; /* Make it span the full width of the grid */
 }
 
 .sticky-update {
@@ -269,19 +267,12 @@ body::before {
 
 .photo-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr; /* Photos take 2/3, messages take 1/3 */
-    gap: 1rem; /* Space between the photos and the message container */
+    grid-template-columns: 1fr; /* Single column layout for the grid */
+    gap: 1rem; /* Space between grid items */
     align-items: start; /* Align items at the top */
-}
-
-.photo-msg-container {
-    background: var(--augie-yellow); /* Set background color to yellow */
-    padding: 1rem;
-    border-radius: 10px;
-    color: black; /* Ensure text is readable */
-    overflow-y: auto; /* Add scroll if content overflows */
-    max-height: 80vh; /* Optional: Limit height */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for better visibility */
+    width: 100%; /* Ensure the grid spans the full width of the parent container */
+    margin: 0; /* Remove any default margins */
+    padding: 0; /* Remove any default padding */
 }
 
 .update-button {
@@ -302,6 +293,81 @@ body::before {
 
 .update-button:hover {
     background-color: #e5b800; /* Slightly darker yellow on hover */
+}
+
+.update-btn {
+    position: absolute; /* Position the button relative to the photo-container */
+    top: 1rem; /* Position it 1rem from the top of the photo-container */
+    left: 1rem; /* Position it 1rem from the left of the photo-container */
+    background-color: var(--augie-yellow); /* Yellow background */
+    color: black; /* Black text */
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 10; /* Ensure the button is above other elements */
+}
+
+.update-btn:hover {
+    background-color: #e5b800; /* Slightly darker yellow on hover */
+}
+
+.image-container {
+    display: grid; /* Use CSS Grid for layout */
+    grid-template-columns: 2fr 1fr; /* Image takes 2/3, description takes 1/3 */
+    gap: 1rem; /* Add spacing between the image and description */
+    align-items: center; /* Vertically align the content */
+    margin-bottom: 1.5rem;
+    background: rgba(255, 255, 255, 0.1); /* Optional: Add a subtle background for the container */
+    padding: 1rem;
+    border-radius: 10px;
+    width: 100%; /* Ensure the container spans the full width */
+}
+
+.image-container img {
+    width: 100%; /* Make the image span the full width of its grid cell */
+    border-radius: 10px;
+    display: block; /* Ensure the image doesn't overflow */
+}
+
+.image-description {
+    font-size: 1rem;
+    color: white;
+    text-align: left; /* Align the text to the left */
+    display: flex;
+    align-items: center; /* Vertically center the description text */
+    justify-content: center; /* Horizontally center the description text */
+    padding: 0 1rem; /* Add padding for better spacing */
+}
+
+.hidden {
+    display: none; /* Hide elements with the 'hidden' class */
+}
+
+#uploadFormContainer {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.confirm-btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--augie-yellow);
+    color: black;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.confirm-btn:hover {
+    background-color: #e5b800;
 }
 
 @media (min-width: 768px) {

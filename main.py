@@ -3,6 +3,7 @@ from flask import Flask, redirect, request, render_template, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from werkzeug.utils import secure_filename
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -13,7 +14,7 @@ app.config['UPLOAD_FOLDER'] = os.path.join('static', 'images')
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
 messages = []  # List to store messages
-uploaded_images = []  # List to store all uploaded image filenames
+uploaded_images = []  # List to store dictionaries with 'filename' and 'description'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -51,12 +52,14 @@ def index():
 @app.route('/inventory', methods=['GET', 'POST'])
 def inventory():
     if request.method == 'POST':
-        message = request.form['message']
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        messages.append({'text': message, 'timestamp': timestamp})
-        return redirect(url_for('inventory'))
-    # Reverse the uploaded_images list to show the newest images first
-    return render_template('inventoryFeed.html', messages=messages, uploaded_images=reversed(uploaded_images))
+        # Handle message submission
+        message = request.form.get('message')
+        if message:
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            messages.append({'text': message, 'timestamp': timestamp})
+
+    # Pass both messages and uploaded images to the template
+    return render_template('inventoryFeed.html', messages=messages, uploaded_images=uploaded_images)
 
 #message addition route
 @app.route('/add_message', methods=['POST'])
@@ -73,19 +76,19 @@ def allowed_file(filename):
  
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
-     if 'images' not in request.files:
-         return "No file part", 400
- 
-     files = request.files.getlist('images')  # Get multiple files
-     for file in files:
-         if file and allowed_file(file.filename):
-             file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-             file.save(file_path)
-             uploaded_images.append(file.filename)  # Add the filename to the list
-         else:
-             return f"File type not allowed: {file.filename}", 400
- 
-     return redirect(url_for('inventory'))
+    if 'image' not in request.files:
+        return redirect(url_for('inventory'))
+
+    file = request.files['image']
+    description = request.form.get('description')
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # Prepend the new image to the list
+        uploaded_images.insert(0, {'filename': filename, 'description': description})
+
+    return redirect(url_for('inventory'))
 
 
 @app.route('/volunteer')
@@ -140,3 +143,4 @@ def volunteer_signup():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+
