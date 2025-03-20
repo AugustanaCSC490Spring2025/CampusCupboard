@@ -6,7 +6,7 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     min-height: 100vh;
-    background: url('/static/images/old_main.jpg') no-repeat center center;
+    background: url('/static/images/old_main_85.jpg') no-repeat center center;
     background-size: cover;
     color: black;
 }
@@ -74,13 +74,34 @@ body {
 
 .meet-team {
     text-align: center;
-    color: white;
-    margin-top: 2rem;
+    background-color: white;
+    color: var(--augie-blue);
+    margin: 2rem auto;
+    width: 100%;
+    max-width: 2000px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
+
+#team-info {
+    padding: 15px;
+    text-align: left;
+}
+
+#team-image {
+    padding: 15px;
+    text-align: center;
+}
+
+
 
 .meet-team h2 {
     font-size: 2rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 2rem;
 }
 
 .meet-team p {

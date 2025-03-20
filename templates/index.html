@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="hero-section">
-
+<div class ="container-fluid">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -17,11 +17,20 @@
                     </a>
                 </div>
                 <div class="meet-team">
-                    <h2>Meet the team</h2>
-                    <p>Meet the team behind this project.</p>
+                    <div class = "row">
+                        <div class="col-md-6" id="team-info">
+                            <h2 style="text-align: center;">Meet the team</h2>
+                            <p>Meet the team behind this project.</p>
+                        </div>
+                        <div class="col-md-6" id="team-image">
+                            <h2>Team Image</h2>
+                            <img src="{{ url_for('static', filename='images/old_main_85.jpg') }}" alt="Team Image" class="img-fluid">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 {% endblock %}
