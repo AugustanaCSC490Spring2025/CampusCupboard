@@ -3,27 +3,27 @@ from flask import Flask, redirect, request, render_template, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from werkzeug.utils import secure_filename
 
-app = Flask(__name__)
+from dotenv import load_dotenv
+load_dotenv()
+
+app = Flask(__name__, static_folder='static')
+app.config['UPLOAD_FOLDER'] = os.path.join('static', 'images')
+
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
 messages = []  # List to store messages
+uploaded_images = []  # List to store dictionaries with 'filename' and 'description'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres: yIf7EOylTW2vKJK5@nobly-intrigued-dassie.data-1.use1.tembo.io:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
 CENTRAL_TZ = ZoneInfo("America/Chicago")
 UTC_TZ = ZoneInfo("UTC")
-
-#reminder to take out IDSwipe class and keep StudentInput
-class IDSwipe(db.Model):
-    __tablename__ = 'id_swipes'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    scanned_id = db.Column(db.String, nullable=False)
-    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))  
-
+ 
 #class to make table for id swipe
 class StudentInput(db.Model):
     __tablename__ = 'student_inputs'
@@ -43,49 +43,64 @@ class Volunteer(db.Model):
 with app.app_context():
     db.create_all()
 
+#homepage route
 @app.route('/')
 def index():
     return render_template('index.html')
 
+#inventory feed route
 @app.route('/inventory', methods=['GET', 'POST'])
 def inventory():
     if request.method == 'POST':
-        message = request.form['message']
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        messages.append({'text': message, 'timestamp': timestamp})
-        return redirect(url_for('inventory'))
-    return render_template('inventoryFeed.html', messages=messages)
+        # Handle message submission
+        message = request.form.get('message')
+        if message:
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            messages.append({'text': message, 'timestamp': timestamp})
 
-@app.route('/add_message', methods=['POST'])
-def add_message():
-    message = request.form['message']
-    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    messages.append({'text': message, 'timestamp': timestamp})
+    # Pass both messages and uploaded images to the template
+    return render_template('inventoryFeed.html', messages=messages, uploaded_images=uploaded_images)
+
+ALLOWED_EXTENSIONS = {'png', 'heic', 'jpg', 'jpeg'}
+ 
+def allowed_file(filename):
+     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+ 
+@app.route('/upload_image', methods=['POST'])
+def upload_image():
+    if 'image' not in request.files:
+        return redirect(url_for('inventory'))
+
+    file = request.files['image']
+    description = request.form.get('description')
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # Add the current timestamp
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # Prepend the new image to the list
+        uploaded_images.insert(0, {'filename': filename, 'description': description, 'timestamp': timestamp})
+
     return redirect(url_for('inventory'))
+
 
 @app.route('/volunteer')
 def volunteer():
-    return render_template('volunteer.html')  # Render the volunteer page
+    return render_template('volunteer.html')
 
+#about us page route
 @app.route('/aboutus')
 def about():
     return render_template('aboutus.html') # Placeholder for about page implementation
 
+#admin page route
+#   needs a login page page with username and pass at somepoint
 @app.route('/admin')
 def admin():
     return render_template('admin_page.html') # Placeholder for admin page implementation
 
-@app.route('/IDscan', methods=['GET', 'POST'])
-def IDscan():
-    if request.method == 'POST':
-        scanned_id = request.form.get('inputBox', '').strip()[3:-6]
-        if scanned_id:
-            new_swipe = IDSwipe(scanned_id=scanned_id)
-            db.session.add(new_swipe)
-            db.session.commit()
-
-    return render_template('id_scan.html')
-
+#student swipe page route inside admin page
 @app.route('/student_input', methods=['GET', 'POST'])
 def student_input():
     if request.method == 'POST':
@@ -100,10 +115,12 @@ def student_input():
         return redirect(url_for('student_input'))
     return render_template('student_input.html')  
 
+#calendar page route
 @app.route('/calendar')
 def calendar():
     return render_template('calendar.html')
 
+#volunteer page signup route
 @app.route('/volunteer_signup', methods=['GET', 'POST'])
 def volunteer_signup():
     if request.method == 'POST':
@@ -120,3 +137,4 @@ def volunteer_signup():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+

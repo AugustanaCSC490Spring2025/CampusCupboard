@@ -4,6 +4,8 @@
 {% block content %}
     <!-- Custom JavaScript -->
     <script>
+
+        //only lets user enter ID and after id is entered, it unlocks food pound area
         function checkStudentID() {
             var studentID = document.getElementById('studentID').value;
             var poundsTaken = document.getElementById('poundsTaken');
@@ -16,9 +18,11 @@
             }
         }
 
+        //removes non numerical characters in id area
         function validateStudentID() {
             var studentID = document.getElementById('studentID');
-            studentID.value = studentID.value.replace(/\D/g, ''); // Remove non-numeric characters
+            studentID.value = studentID.value.replace(/\D/g, ''); 
+            
         }
 
         function validateForm() {
@@ -32,6 +36,11 @@
                 return false;
             } else {
                 studentID.setCustomValidity("");
+            }
+            
+            //if the id length entered is > 7 we assume it was swiped and needs to be trimmed to the correct length
+            if (studentID.value.length > 7) {
+                studentID.value = studentID.value.substring(2, studentID.value.length - 4);
             }
 
             if (isNaN(poundsValue) || poundsValue < 1 || poundsValue > 1000) {
