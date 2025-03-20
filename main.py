@@ -57,6 +57,8 @@ def inventory():
         if message:
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             messages.append({'text': message, 'timestamp': timestamp})
+        # Redirect to the same page to prevent form resubmission
+        return redirect(url_for('inventory'))
 
     # Pass both messages and uploaded images to the template
     return render_template('inventoryFeed.html', messages=messages, uploaded_images=uploaded_images)
