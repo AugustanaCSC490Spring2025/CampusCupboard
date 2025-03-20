@@ -6,7 +6,7 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     min-height: 100vh;
-    background: url('/static/images/old_main_85.jpg') no-repeat center center;
+    background: url('/static/images/old_main.jpg') no-repeat center center;
     background-size: cover;
     color: black;
     position: relative; /* Ensure the pseudo-element is positioned relative to the body */
