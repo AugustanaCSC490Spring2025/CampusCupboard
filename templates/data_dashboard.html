@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Data Dashboard</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <p><a href="/admin">Admin</a></p>
+            
+        </ul>
+    </nav>
+    <main>
+        <section id="user-ids">
+            <h2>User ID Data</h2>
+            <ul>
+                <li>Total Distinct User Count: {{ distinct_user_count }}</li>
+            </ul>
+        </section>
+
+        <section id="poundage">
+            <h2>Food Poundage Data</h2>
+            <ul>
+                <li>Total LBs taken out: {{ total_lbs_taken }}</li>
+            </ul>
+        </section>
+    </main>
+    <script src="/static/scripts.js"></script>
+</body>
+</html>
