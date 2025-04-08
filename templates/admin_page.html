@@ -1,17 +1,16 @@
-<body>
-    <div>
-        <h1>Admin page</h1>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="col-md-8"></div>
+    <div class="action-buttons">
+        <a class="btn btn-inventory">
+            <h2>Admin Tools</h2>
+        </a>
+        <a href="/student_input" class="btn btn-volunteer">
+            <h2>Student Swipe</h2>
+        </a>
     </div>
-    
-    <div>
-        <h2>Admin tools</h2>
-        
-        <!--<p>Go to <a href="/IDscan">student swipe checkout</a></p>-->
-
-        <p>Go to <a href="/student_input">student swipe page</a></p>
-    </div>
-
-</body>
-
+</div>
+{% endblock %}
 
 
