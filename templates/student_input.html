@@ -5,13 +5,14 @@
     <script>
         // Ensures the student ID input only accepts exactly 7 digits
         function checkStudentID() {
-            var studentID = document.getElementById('studentID').value;
+            var studentIDInput = document.getElementById('studentID');
+            var studentID = studentIDInput.value;
             var poundsTaken = document.getElementById('poundsTaken');
             
             // Automatically trim swiped ID (13 digits) to 7 digits
             if (studentID.length === 13) {
-                studentID = studentID.substring(2, 9); // Trim to 7 digits
-                document.getElementById('studentID').value = studentID;
+                studentID = studentID.substring(1, 8); // Adjusted to correctly extract the 7-digit ID
+                studentIDInput.value = studentID;
             }
 
             // Enable poundsTaken only if studentID is exactly 7 digits
