@@ -115,7 +115,28 @@ def student_input():
         db.session.commit()
         
         return redirect(url_for('student_input'))
-    return render_template('student_input.html')  
+    return render_template('student_input.html') 
+
+@app.route('/data_dashboard', methods=['GET', 'POST']) 
+def data_dashboard():
+    # Fetch all student inputs from the database
+    student_inputs = StudentInput.query.all()
+    
+    # Convert the data to a list of dictionaries for easier rendering in the template
+    data = [{'student_id': input.student_id, 'pounds_taken': input.pounds_taken, 'timestamp': input.timestamp} for input in student_inputs]
+    
+    # Fetch the distinct count of student IDs
+    distinct_student_count = db.session.query(StudentInput.student_id).distinct().count()
+    
+    # Pass the count along with the data to the template
+    # Fetch distinct student IDs
+    distinct_user_ids = db.session.query(StudentInput.student_id).distinct().all()
+    user_ids = [user_id[0] for user_id in distinct_user_ids]
+    total_pounds_taken = db.session.query(db.func.sum(StudentInput.pounds_taken)).scalar()
+
+    # Pass the distinct user IDs and count to the template
+    return render_template('data_dashboard.html', data=data, distinct_user_count=distinct_student_count, total_lbs_taken=total_pounds_taken)
+
 
 #calendar page route
 @app.route('/calendar')

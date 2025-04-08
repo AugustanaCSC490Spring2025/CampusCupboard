@@ -4,13 +4,17 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: "Inter", sans-serif;
     min-height: 100vh;
     background: url('/static/images/old_main.jpg') no-repeat center center;
     background-size: cover;
     color: black;
     position: relative; /* Ensure the pseudo-element is positioned relative to the body */
     z-index: 0; /* Set the stacking context */
+}
+
+h1 {
+    font-weight: 700;
 }
 
 body::before {
@@ -50,6 +54,7 @@ body::before {
     flex-direction: column;
     gap: 2rem;
     margin-bottom: 4rem;
+    margin-top: 2rem;
 }
 
 .btn {
