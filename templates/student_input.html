@@ -3,20 +3,12 @@
 {% block content %}
     <!-- Custom JavaScript -->
     <script>
-        // Ensures the student ID input only accepts exactly 7 digits
         function checkStudentID() {
-            var studentIDInput = document.getElementById('studentID');
-            var studentID = studentIDInput.value;
-            var poundsTaken = document.getElementById('poundsTaken');
-            
-            // Automatically trim swiped ID (13 digits) to 7 digits
-            if (studentID.length === 13) {
-                studentID = studentID.substring(1, 8); // Adjusted to correctly extract the 7-digit ID
-                studentIDInput.value = studentID;
-            }
-
-            // Enable poundsTaken only if studentID is exactly 7 digits
-            if (studentID.length === 7) {
+            const studentIDInput = document.getElementById('studentID');
+            const studentID = studentIDInput.value;
+            const poundsTaken = document.getElementById('poundsTaken');
+    
+            if (studentID.trim() !== '' && studentID.length === 7) {
                 poundsTaken.disabled = false;
                 poundsTaken.readOnly = false;
             } else {
@@ -24,31 +16,55 @@
                 poundsTaken.readOnly = true;
             }
         }
+    
+        function cleanStudentIDInput() {
+            const input = document.getElementById('studentID');
+            let raw = input.value;
 
-        // Removes non-numerical characters and limits input to 7 digits
-        function validateStudentID() {
-            var studentID = document.getElementById('studentID');
-            studentID.value = studentID.value.replace(/\D/g, ''); // Remove non-numeric characters
-            
-            // Limit the input to 7 digits
-            if (studentID.value.length > 7) {
-                studentID.value = studentID.value.substring(0, 7);
+            if (raw.startsWith(';')) {
+                // get id from between ';' and '='
+                const swipeMatch = raw.match(/;(\d+)=/);
+                if (swipeMatch) {
+                    let digits = swipeMatch[1]; 
+                    // take the last 7 numbers 
+                    input.value = digits.slice(-7); 
+                } else {
+                    input.value = '';
+                }
+            } else {
+                // clean up manual entry
+                let cleaned = raw.replace(/\D/g, '');
+                input.value = cleaned.slice(-7);
             }
+
+            checkStudentID();
         }
-
+    
+        document.addEventListener("DOMContentLoaded", function () {
+            const studentIDInput = document.getElementById('studentID');
+            studentIDInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    cleanStudentIDInput();
+                }
+            });
+        });
+    
         function validateForm() {
-            var studentID = document.getElementById('studentID');
-            var poundsTaken = document.getElementById('poundsTaken');
-            var poundsValue = parseFloat(poundsTaken.value);
-
+            const studentID = document.getElementById('studentID');
+            const poundsTaken = document.getElementById('poundsTaken');
+            const poundsValue = parseFloat(poundsTaken.value);
+    
+            studentID.value = studentID.value.replace(/\D/g, '').slice(-7);
+    
             if (studentID.value.length !== 7) {
-                studentID.setCustomValidity("Student ID must be exactly 7 digits.");
+                studentID.setCustomValidity("Please enter a valid 7-digit student ID.");
                 studentID.reportValidity();
                 return false;
             } else {
                 studentID.setCustomValidity("");
             }
-
+    
             if (isNaN(poundsValue) || poundsValue < 1 || poundsValue > 1000) {
                 poundsTaken.setCustomValidity("Please enter a valid number of pounds between 1 and 1000.");
                 poundsTaken.reportValidity();
@@ -56,10 +72,10 @@
             } else {
                 poundsTaken.setCustomValidity("");
             }
-
+    
             return true;
         }
-    </script>    
+    </script>
 
     <div class="container d-flex justify-content-center align-items-center" style="height: 80vh;">
         <div class="card p-4 shadow" style="width: 350px;">
@@ -69,7 +85,7 @@
             <form method="post" onsubmit="return validateForm()">
                 <div class="mb-3">
                     <label for="studentID" class="form-label">Student ID</label>
-                    <input type="text" class="form-control" id="studentID" name="studentID" required oninput="checkStudentID(); validateStudentID();">
+                    <input type="text" class="form-control" id="studentID" name="studentID" required oninput="checkStudentID();"autofocus>
                     <div class="invalid-feedback">
                         Please enter a valid student ID.
                     </div>

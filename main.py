@@ -119,23 +119,24 @@ def student_input():
 
 @app.route('/data_dashboard', methods=['GET', 'POST']) 
 def data_dashboard():
-    # Fetch all student inputs from the database
+    # all swiped inputs
     student_inputs = StudentInput.query.all()
     
-    # Convert the data to a list of dictionaries for easier rendering in the template
-    data = [{'student_id': input.student_id, 'pounds_taken': input.pounds_taken, 'timestamp': input.timestamp} for input in student_inputs]
+    #convert data to dictionaries
+    swipe_data = [{'student_id': input.student_id, 'pounds_taken': input.pounds_taken, 'timestamp': input.timestamp} for input in student_inputs]
     
-    # Fetch the distinct count of student IDs
+    #distinct student ID count
     distinct_student_count = db.session.query(StudentInput.student_id).distinct().count()
+    total_student_count = db.session.query(StudentInput.student_id).count()
     
-    # Pass the count along with the data to the template
-    # Fetch distinct student IDs
+    #user ID's
     distinct_user_ids = db.session.query(StudentInput.student_id).distinct().all()
     user_ids = [user_id[0] for user_id in distinct_user_ids]
+
+    #total # of pounds taken
     total_pounds_taken = db.session.query(db.func.sum(StudentInput.pounds_taken)).scalar()
 
-    # Pass the distinct user IDs and count to the template
-    return render_template('data_dashboard.html', data=data, distinct_user_count=distinct_student_count, total_lbs_taken=total_pounds_taken)
+    return render_template('data_dashboard.html', data=swipe_data, total_student_count=total_student_count, distinct_user_count=distinct_student_count, total_lbs_taken=total_pounds_taken)
 
 
 #calendar page route
