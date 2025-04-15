@@ -33,6 +33,10 @@ body::before {
     padding: 1rem 0;
 }
 
+.img-fluid{
+    border-radius: 50%;
+}
+
 .navbar-brand {
     font-size: 1.5rem;
     font-weight: bold;
@@ -106,22 +110,27 @@ body::before {
 
 .meet-team {
     text-align: center;
-    background-color: white;
+    background-color: var(--augie-blue);
     color: var(--augie-blue);
     margin: 2rem auto;
     width: 100%;
-    max-width: 2000px;
-    display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 800px;
+    display: flex;
     padding-top: 1rem;
     padding-bottom: 2rem;
     padding-left: 1rem;
     padding-right: 1rem;
+    border-radius: 15px;
 }
 
-#team-info {
-    padding: 15px;
-    text-align: left;
+#roles {
+    color: white;
+    font-style: italic;
+    font-weight: 300;
+    font-size:smaller;
 }
 
 #team-image {
@@ -129,7 +138,9 @@ body::before {
     text-align: center;
 }
 
-
+#team-intro{
+    margin-bottom: 2rem;
+}
 
 .meet-team h2 {
     font-size: 2rem;
@@ -138,6 +149,7 @@ body::before {
 
 .meet-team p {
     font-size: 1.1rem;
+    margin-bottom: 0;
 }
 
 /* About page styles */
