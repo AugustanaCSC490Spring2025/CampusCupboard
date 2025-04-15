@@ -1,12 +1,15 @@
 import os
 from flask import Flask, redirect, request, render_template, url_for
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from werkzeug.utils import secure_filename
+from collections import Counter
+from statistics import mean
 
 from dotenv import load_dotenv
 load_dotenv()
+
 
 app = Flask(__name__, static_folder='static')
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'images')
@@ -128,16 +131,39 @@ def data_dashboard():
     #distinct student ID count
     distinct_student_count = db.session.query(StudentInput.student_id).distinct().count()
     total_student_count = db.session.query(StudentInput.student_id).count()
+    avg_visits_per_user = round(total_student_count / distinct_student_count, 2)
+
+    day_visits = Counter(input.timestamp.date() for input in student_inputs)
     
+    #calculate the average visits per day
+    avg_visits_per_day = round(mean(day_visits.values()))
+    day_of_week_visits = Counter(input.timestamp.weekday() for input in student_inputs)
+    
+    #map the days
+    weekday_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    
+    #find the most visited day (highest count)
+    most_visited_day_index = max(day_of_week_visits, key=day_of_week_visits.get, default=None)
+    most_visited_day = weekday_names[most_visited_day_index]
+
     #user ID's
     distinct_user_ids = db.session.query(StudentInput.student_id).distinct().all()
     user_ids = [user_id[0] for user_id in distinct_user_ids]
 
     #total # of pounds taken
     total_pounds_taken = db.session.query(db.func.sum(StudentInput.pounds_taken)).scalar()
+    avg_lbs_per_day = round(total_pounds_taken / len(day_visits), 2)
 
-    return render_template('data_dashboard.html', data=swipe_data, total_student_count=total_student_count, distinct_user_count=distinct_student_count, total_lbs_taken=total_pounds_taken)
 
+    #returns the html and sends the data to it to display
+    return render_template('data_dashboard.html', data=swipe_data, 
+                           total_student_count=total_student_count, 
+                           distinct_user_count=distinct_student_count, 
+                           total_lbs_taken=total_pounds_taken,
+                           avg_visits_per_day=avg_visits_per_day,
+                           most_visited_day=most_visited_day,
+                           avg_visits_per_user=avg_visits_per_user,
+                           avg_lbs_per_day=avg_lbs_per_day)
 
 #calendar page route
 @app.route('/calendar')

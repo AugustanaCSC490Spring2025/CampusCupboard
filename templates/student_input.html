@@ -20,12 +20,15 @@
         function cleanStudentIDInput() {
             const input = document.getElementById('studentID');
             let raw = input.value;
+            console.log('Raw input:', raw);
 
-            if (raw.startsWith(';')) {
+            if (raw.includes(';')) {
                 // get id from between ';' and '='
                 const swipeMatch = raw.match(/;(\d+)=/);
+                console.log('Swipe match:', swipeMatch);
                 if (swipeMatch) {
                     let digits = swipeMatch[1]; 
+                    console.log('Digits:', digits);
                     // take the last 7 numbers 
                     input.value = digits.slice(-7); 
                 } else {
@@ -82,7 +85,7 @@
             <div class="text-center mb-3">
                 <img src="{{ url_for('static', filename='images/Augie_A.png') }}" alt="Augustana College Logo" style="max-width: 150px;">
             </div>
-            <form method="post" onsubmit="return validateForm()">
+            <form method="post" onsubmit="return validateForm()" autocomplete="off">
                 <div class="mb-3">
                     <label for="studentID" class="form-label">Student ID</label>
                     <input type="text" class="form-control" id="studentID" name="studentID" required oninput="checkStudentID();"autofocus>

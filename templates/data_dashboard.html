@@ -13,7 +13,7 @@
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
-            <p><a href="/admin">Admin</a></p>
+            <li><a href="/admin">Admin</a></li>
             
         </ul>
     </nav>
@@ -21,9 +21,10 @@
         <section id="user-ids">
             <h2>User ID Data</h2>
             <ul>
-                <li>Distinct Students Served: {{ distinct_user_count }}</li>
-                <li>Total Students Served: {{ total_student_count }}</li>
-                <li>Number of Repeat visitiors: </li>
+                <li>Total Number of Students Served (total swipes): {{ total_student_count }}</li>
+                <li>Distinct Number of Students Served: {{ distinct_user_count }}</li>
+                <li>Average Number of Visits per User: {{ avg_visits_per_user }}</li>
+                
             </ul>
         </section>
 
@@ -31,11 +32,23 @@
             <h2>Food Poundage Data</h2>
             <ul>
                 <li>Total Pounds Distributed: {{ total_lbs_taken }}</li>
-                <li>Average Pounds Distributed Per day: </li>
-                <li>Average Pounds Per User: </li>
-                <li>Highest Distrubution:</li>
+                <li>Average Pounds Distributed Per day: {{avg_lbs_per_day}}</li>
+
             </ul>
         </section>
+
+        <section id="timestamp-data">
+            <h2>Timestamp Data</h2>
+            <ul>
+                <li>Most Visited Day of the Week: {{ most_visited_day }}</li>
+                <li>Average Visits Per Day: {{ avg_visits_per_day }}</li>
+                <li></li>
+                <li>Average Time Between Visits:</li>
+                <li>Average Time Between Visits Per User:</li>
+                <li>Highest Number of Visits in a Day: </li>
+            </ul>
+        </section>
+
     </main>
     <script src="/static/scripts.js"></script>
 </body>
