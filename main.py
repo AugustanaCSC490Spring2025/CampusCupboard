@@ -1,7 +1,7 @@
 import os
-from flask import Flask, redirect, request, render_template, url_for
+from flask import Flask, redirect, request, render_template, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from werkzeug.utils import secure_filename
 from collections import Counter
@@ -26,6 +26,8 @@ db = SQLAlchemy(app)
 
 CENTRAL_TZ = ZoneInfo("America/Chicago")
 UTC_TZ = ZoneInfo("UTC")
+
+app.permanent_session_lifetime = timedelta(minutes=2)  # Set session timeout to 30 minutes
  
 #class to make table for id swipe
 class StudentInput(db.Model):
@@ -99,11 +101,45 @@ def volunteer():
 def about():
     return render_template('aboutus.html') # Placeholder for about page implementation
 
-#admin page route
-#   needs a login page page with username and pass at somepoint
+# Admin credentials
+ADMIN_CREDENTIALS = {
+    'username': 'campuscupboard',
+    'password': 'Augustana2025@'
+}
+
+# Admin login route
+@app.route('/admin_login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        # Check admin credentials
+        if username == ADMIN_CREDENTIALS['username'] and password == ADMIN_CREDENTIALS['password']:
+            session.permanent = False  # Make the session non-permanent
+            session['admin_logged_in'] = True
+            return redirect(url_for('admin'))
+        else:
+            flash('Your username or password is incorrect', 'danger')
+            return redirect(url_for('admin_login'))
+
+    return render_template('admin_login.html')
+
+# Admin page route with authentication check
 @app.route('/admin')
 def admin():
-    return render_template('admin_page.html') # Placeholder for admin page implementation
+    # Check if admin is logged in
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('admin_login'))
+
+    # Render the admin page if logged in
+    return render_template('admin_page.html')
+
+# Logout route for admin
+@app.route('/logout')
+def logout():
+    session.pop('admin_logged_in', None)
+    return redirect(url_for('admin_login'))
 
 #student swipe page route inside admin page
 @app.route('/student_input', methods=['GET', 'POST'])
