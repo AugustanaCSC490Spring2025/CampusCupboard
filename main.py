@@ -146,6 +146,8 @@ def data_dashboard():
     most_visited_day_index = max(day_of_week_visits, key=day_of_week_visits.get, default=None)
     most_visited_day = weekday_names[most_visited_day_index]
 
+    highest_num_of_visits = max(day_visits.values(), default=0)
+
     #user ID's
     distinct_user_ids = db.session.query(StudentInput.student_id).distinct().all()
     user_ids = [user_id[0] for user_id in distinct_user_ids]
@@ -163,7 +165,8 @@ def data_dashboard():
                            avg_visits_per_day=avg_visits_per_day,
                            most_visited_day=most_visited_day,
                            avg_visits_per_user=avg_visits_per_user,
-                           avg_lbs_per_day=avg_lbs_per_day)
+                           avg_lbs_per_day=avg_lbs_per_day,
+                           highest_num_of_visits=highest_num_of_visits)
 
 #calendar page route
 @app.route('/calendar')
