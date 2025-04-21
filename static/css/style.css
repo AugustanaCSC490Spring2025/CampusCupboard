@@ -108,6 +108,19 @@ body::before {
     background-color: #e5b800; /* Slightly darker yellow on hover */
 }
 
+.data-dashboard {
+    background-color: white;
+    margin-top: 4rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    margin-bottom: 4rem;
+    padding: 1.5rem;
+    border-radius: 15px;
+}
+
+.data-container{
+    margin-top: 4rem;
+}
 .meet-team {
     text-align: center;
     background-color: var(--augie-blue);

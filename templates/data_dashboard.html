@@ -1,23 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Dashboard</title>
-    <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body>
-    <header>
-        <h1>Data Dashboard</h1>
-    </header>
-    <nav>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/admin">Admin</a></li>
-            
-        </ul>
-    </nav>
-    <main>
+{% extends "base.html" %}
+{% block content %}
+<div class ="data-dashboard">
+    <h1 style="text-align: center;">Data Dashboard</h1>
+    <div class ="data-container">
         <section id="user-ids">
             <h2>User ID Data</h2>
             <ul>
@@ -48,8 +33,8 @@
                 <li>Highest Number of Visits in a Day: </li>
             </ul>
         </section>
-
-    </main>
+    </div>
+</div>
+        
     <script src="/static/scripts.js"></script>
-</body>
-</html>
+{% endblock %}
