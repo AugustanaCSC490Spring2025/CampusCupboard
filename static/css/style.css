@@ -166,6 +166,14 @@ body::before {
     margin-bottom: 0;
 }
 
+
+.chart{
+    background-color: black;
+}
+
+.container mt-5{
+    margin: 4rem;
+}
 /* About page styles */
 .about-section {
     padding: 3rem 0;
