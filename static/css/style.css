@@ -108,6 +108,30 @@ body::before {
     background-color: #e5b800; /* Slightly darker yellow on hover */
 }
 
+.logout-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 1rem;
+}
+
+.logout-btn:hover {
+    background-color: #e60000;
+}
+
+.logout-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    margin-top: 2rem; /* Add some spacing from other elements */
+}
+
 .data-dashboard {
     background-color: white;
     margin-top: 4rem;

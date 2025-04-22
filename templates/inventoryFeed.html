@@ -6,7 +6,9 @@
         <h1 class="photo-title">Live Inventory Feed</h1>
         
         {% if session.get('admin_logged_in') %}
-        <button type="button" class="update-btn" onclick="showUploadForm()">Update</button>
+        <div class="admin-tools">
+            <button type="button" class="update-btn" onclick="showUploadForm()">Update</button>
+        </div>
         
         <div id="uploadFormContainer" class="hidden">
             <form id="uploadForm" method="POST" action="{{ url_for('upload_image') }}" enctype="multipart/form-data">

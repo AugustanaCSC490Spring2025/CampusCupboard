@@ -3,7 +3,7 @@
 {% block content %}
 <div class="col-md-8"></div>
     <div class="action-buttons">
-        <a href = "/data_dashboard" class="btn btn-inventory">
+        <a href="/data_dashboard" class="btn btn-inventory">
             <h2>Admin Tools</h2>
         </a>
         <a href="/student_input" class="btn btn-volunteer">
@@ -11,4 +11,7 @@
         </a>
     </div>
 
+    <div class="logout-container">
+        <a href="{{ url_for('logout') }}" class="logout-btn">Log Out</a>
+    </div>
 {% endblock %}
