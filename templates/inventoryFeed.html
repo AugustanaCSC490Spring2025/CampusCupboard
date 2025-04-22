@@ -4,6 +4,8 @@
 <div class="grid-container">
     <div class="photo-container">
         <h1 class="photo-title">Live Inventory Feed</h1>
+        
+        {% if session.get('admin_logged_in') %}
         <button type="button" class="update-btn" onclick="showUploadForm()">Update</button>
         
         <div id="uploadFormContainer" class="hidden">
@@ -13,6 +15,7 @@
                 <button type="submit" class="confirm-btn">Upload</button>
             </form>
         </div>
+        {% endif %}
 
         <div class="photo-grid">
             <div class="uploaded-images">
@@ -23,9 +26,11 @@
                         <p>{{ image.description }}</p>
                         <small class="image-timestamp">Uploaded on: {{ image.timestamp }}</small>
                     </div>
+                    {% if session.get('admin_logged_in') %}
                     <form method="POST" action="{{ url_for('delete_image', image_id=loop.index0) }}">
                         <button type="submit" class="delete-btn">Delete</button>
                     </form>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
