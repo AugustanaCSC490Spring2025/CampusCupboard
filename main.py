@@ -9,6 +9,7 @@ from collections import Counter
 from statistics import mean
 import csv
 
+#for env file 
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -39,6 +40,7 @@ class StudentInput(db.Model):
     pounds_taken = db.Column(db.Float, nullable=False) 
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
 
+#class to make volunteer table
 class Volunteer(db.Model):
     __tablename__ = 'volunteers'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -93,6 +95,16 @@ def upload_image():
 
     return redirect(url_for('inventory'))
 
+@app.route('/delete_image/<int:image_id>', methods=['POST'])
+def delete_image(image_id):
+    # Find the image by its index in the uploaded_images list
+    if 0 <= image_id < len(uploaded_images):
+        image = uploaded_images.pop(image_id)  # Remove the image from the list
+        # Delete the file from the filesystem
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], image['filename'])
+        if os.path.exists(file_path):
+            os.remove(file_path)
+    return redirect(url_for('inventory'))
 
 @app.route('/volunteer')
 def volunteer():
@@ -160,21 +172,18 @@ def student_input():
 
 @app.route('/data_dashboard', methods=['GET', 'POST']) 
 def data_dashboard():
+
     #all the swipes in the table StudentInput
     student_inputs = StudentInput.query.all()
-    
-    #convert data to dictionaries from the data table
-    swipe_data = [{'student_id': input.student_id, 'pounds_taken': input.pounds_taken, 'timestamp': input.timestamp} for input in student_inputs]
-    
+
     #distinct student ID count
     distinct_student_count = db.session.query(StudentInput.student_id).distinct().count()
     total_student_count = db.session.query(StudentInput.student_id).count()
     avg_visits_per_user = round(total_student_count / distinct_student_count, 2)
 
-    day_visits = Counter(input.timestamp.date() for input in student_inputs)
-    
     #calculate the average visits per day
-    avg_visits_per_day = round(mean(day_visits.values()))
+    total_visits = Counter(input.timestamp.date() for input in student_inputs)
+    avg_visits_per_day = round(mean(total_visits.values()))
     day_of_week_visits = Counter(input.timestamp.weekday() for input in student_inputs)
     
     #map the days
@@ -183,20 +192,14 @@ def data_dashboard():
     #find the most visited day (highest count)
     most_visited_day_index = max(day_of_week_visits, key=day_of_week_visits.get, default=None)
     most_visited_day = weekday_names[most_visited_day_index]
-
-    highest_num_of_visits = max(day_visits.values(), default=0)
-
-    #user ID's
-    distinct_user_ids = db.session.query(StudentInput.student_id).distinct().all()
-    user_ids = [user_id[0] for user_id in distinct_user_ids]
+    highest_num_of_visits = max(total_visits.values(), default=0)
 
     #total # of pounds taken
     total_pounds_taken = db.session.query(db.func.sum(StudentInput.pounds_taken)).scalar()
-    avg_lbs_per_day = round(total_pounds_taken / len(day_visits), 2)
-
+    avg_lbs_per_day = round(total_pounds_taken / len(total_visits), 2)
 
     #returns the html and sends the data to it to display
-    return render_template('data_dashboard.html', data=swipe_data, 
+    return render_template('data_dashboard.html',
                            total_student_count=total_student_count, 
                            distinct_user_count=distinct_student_count, 
                            total_lbs_taken=total_pounds_taken,

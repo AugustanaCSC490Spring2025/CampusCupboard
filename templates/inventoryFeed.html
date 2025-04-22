@@ -2,26 +2,13 @@
 
 {% block content %}
 <div class="grid-container">
-    <div class="msg-container">
-        <div class="msg-inner-container">
-            <ul id="messageList">
-                {% for message in messages %}
-                    <li>
-                        <div class="message-text">{{ message.text }}</div>
-                        <div class="message-timestamp">{{ message.timestamp }}</div>
-                    </li>
-                {% endfor %}
-            </ul>
-            <form id="messageForm" method="POST" action="{{ url_for('inventory') }}">
-                <input type="text" name="message" id="messageInput" placeholder="Message..." required>
-                <!-- Use an image as the submit button -->
-                <input type="image" src="{{ url_for('static', filename='images/submit_button.jpg') }}" alt="Submit" class="submit-button">
-            </form>
-        </div>
-    </div>
     <div class="photo-container">
         <h1 class="photo-title">Live Inventory Feed</h1>
-        <button type="button" class="update-btn" onclick="showUploadForm()">Update</button>
+        
+        {% if session.get('admin_logged_in') %}
+        <div class="admin-tools">
+            <button type="button" class="update-btn" onclick="showUploadForm()">Update</button>
+        </div>
         
         <div id="uploadFormContainer" class="hidden">
             <form id="uploadForm" method="POST" action="{{ url_for('upload_image') }}" enctype="multipart/form-data">
@@ -30,6 +17,7 @@
                 <button type="submit" class="confirm-btn">Upload</button>
             </form>
         </div>
+        {% endif %}
 
         <div class="photo-grid">
             <div class="uploaded-images">
@@ -40,6 +28,11 @@
                         <p>{{ image.description }}</p>
                         <small class="image-timestamp">Uploaded on: {{ image.timestamp }}</small>
                     </div>
+                    {% if session.get('admin_logged_in') %}
+                    <form method="POST" action="{{ url_for('delete_image', image_id=loop.index0) }}">
+                        <button type="submit" class="delete-btn">Delete</button>
+                    </form>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
@@ -47,16 +40,6 @@
     </div>
 </div>
 <script>
-    function triggerFileInput() {
-        const fileInput = document.getElementById('imageUpload');
-        fileInput.click(); // Trigger the hidden file input
-
-        fileInput.addEventListener('change', function () {
-            // Automatically submit the form when a file is selected
-            document.getElementById('uploadForm').submit();
-        });
-    }
-
     function showUploadForm() {
         const uploadFormContainer = document.getElementById('uploadFormContainer');
         if (uploadFormContainer) {
@@ -64,52 +47,6 @@
         } else {
             console.error("Upload form container not found.");
         }
-    }
-
-    function addImage() {
-        const imageInput = document.getElementById('imageInput');
-        const descriptionInput = document.getElementById('descriptionInput');
-        const uploadedImagesContainer = document.getElementById('uploadedImagesContainer');
-
-        if (imageInput.files.length === 0) {
-            alert("Please select an image.");
-            return;
-        }
-
-        if (!descriptionInput.value.trim()) {
-            alert("Please enter a description.");
-            return;
-        }
-
-        // Create a new image container
-        const imageContainer = document.createElement('div');
-        imageContainer.classList.add('image-container');
-
-        // Create the image element
-        const img = document.createElement('img');
-        img.src = URL.createObjectURL(imageInput.files[0]); // Use a temporary URL for the uploaded image
-        img.alt = "Uploaded Image";
-        img.style.maxWidth = "100%";
-        img.style.borderRadius = "10px";
-
-        // Create the description element
-        const description = document.createElement('div');
-        description.classList.add('image-description');
-        description.innerHTML = `<p>${descriptionInput.value}</p>`;
-
-        // Append the image and description to the image container
-        imageContainer.appendChild(img);
-        imageContainer.appendChild(description);
-
-        // Prepend the image container to the uploaded images container (add to the top)
-        uploadedImagesContainer.prepend(imageContainer);
-
-        // Clear the form inputs
-        imageInput.value = "";
-        descriptionInput.value = "";
-
-        // Hide the upload form
-        document.getElementById('uploadFormContainer').classList.add('hidden');
     }
 </script>
 {% endblock %}
