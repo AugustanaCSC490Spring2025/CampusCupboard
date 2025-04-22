@@ -95,6 +95,16 @@ def upload_image():
 
     return redirect(url_for('inventory'))
 
+@app.route('/delete_image/<int:image_id>', methods=['POST'])
+def delete_image(image_id):
+    # Find the image by its index in the uploaded_images list
+    if 0 <= image_id < len(uploaded_images):
+        image = uploaded_images.pop(image_id)  # Remove the image from the list
+        # Delete the file from the filesystem
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], image['filename'])
+        if os.path.exists(file_path):
+            os.remove(file_path)
+    return redirect(url_for('inventory'))
 
 @app.route('/volunteer')
 def volunteer():
