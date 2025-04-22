@@ -1,11 +1,13 @@
+from io import StringIO
 import os
-from flask import Flask, redirect, request, render_template, url_for, session, flash
+from flask import Flask, redirect, request, render_template, url_for, session, flash, Response
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from werkzeug.utils import secure_filename
 from collections import Counter
 from statistics import mean
+import csv
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -158,10 +160,10 @@ def student_input():
 
 @app.route('/data_dashboard', methods=['GET', 'POST']) 
 def data_dashboard():
-    # all swiped inputs
+    #all the swipes in the table StudentInput
     student_inputs = StudentInput.query.all()
     
-    #convert data to dictionaries
+    #convert data to dictionaries from the data table
     swipe_data = [{'student_id': input.student_id, 'pounds_taken': input.pounds_taken, 'timestamp': input.timestamp} for input in student_inputs]
     
     #distinct student ID count
@@ -203,6 +205,30 @@ def data_dashboard():
                            avg_visits_per_user=avg_visits_per_user,
                            avg_lbs_per_day=avg_lbs_per_day,
                            highest_num_of_visits=highest_num_of_visits)
+
+
+#csv data file download - code help from https://stackoverflow.com/questions/33766499/flask-button-to-save-table-from-query-as-csv
+@app.route('/download_csv')
+def download_csv():
+    #swipe data query
+    student_inputs = StudentInput.query.all()
+
+    #stores it to memory
+    si = StringIO()
+    writer = csv.writer(si)
+    
+    #csv header
+    writer.writerow(['student_id', 'pounds_taken', 'timestamp'])
+    
+    # data to rows in csv file
+    for input in student_inputs:
+        writer.writerow([input.student_id, input.pounds_taken, input.timestamp])
+
+    #flask response as a csv file to donwload
+    response = Response(si.getvalue(), content_type='text/csv')
+    response.headers["Content-Disposition"] = "attachment; filename=swipes_data.csv"
+    
+    return response
 
 #calendar page route
 @app.route('/calendar')

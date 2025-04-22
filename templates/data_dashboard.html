@@ -29,6 +29,11 @@
                 <li>Average Visits Per Day: {{ avg_visits_per_day }}</li>
                 <li>Highest Number of Visits in a Day: {{highest_num_of_visits}}</li>
             </ul>
+            
+            <form action="{{ url_for('download_csv') }}" method="get">
+                <button type="submit" class="btn btn-primary">Download Data</button>
+            </form>
+            
         </section>
     </div>
 </div>
