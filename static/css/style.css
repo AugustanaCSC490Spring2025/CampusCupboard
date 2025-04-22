@@ -120,6 +120,7 @@ body::before {
 
 .data-container{
     margin-top: 4rem;
+    margin-bottom: 4rem;
 }
 .meet-team {
     text-align: center;
