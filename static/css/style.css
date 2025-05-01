@@ -132,6 +132,22 @@ body::before {
     margin-top: 2rem; /* Add some spacing from other elements */
 }
 
+.location-hours{
+    background-color: white;
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    align-items: center;
+    width: 600px;
+
+}
+
+.meet-team p{
+    color: black;
+    margin-top: 0.5rem;
+}
+
 .data-dashboard {
     background-color: white;
     margin-top: 4rem;
@@ -149,7 +165,7 @@ body::before {
 
 .meet-team {
     text-align: center;
-    background-color: var(--augie-blue);
+    background-color: white;
     color: var(--augie-blue);
     margin: 2rem auto;
     width: 100%;
@@ -166,10 +182,11 @@ body::before {
 }
 
 #roles {
-    color: white;
+    color: black;
     font-style: italic;
     font-weight: 300;
     font-size: smaller;
+    margin-top: 0.5rem;
 }
 
 #team-image {
@@ -178,12 +195,12 @@ body::before {
 }
 
 #team-intro {
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
 }
 
 .meet-team h2 {
     font-size: 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .meet-team p {
@@ -191,6 +208,14 @@ body::before {
     margin-bottom: 0;
 }
 
+
+.chart{
+    background-color: black;
+}
+
+.container mt-5{
+    margin: 4rem;
+}
 /* About page styles */
 .about-section {
     padding: 3rem 0;

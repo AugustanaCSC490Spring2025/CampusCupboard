@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block content %}
@@ -61,6 +60,37 @@
                     </div>
                 </div>
             </div>
+
+            <div class="meet-team">
+                <h2 style="font-weight: bold;">Meet the Developers</h2>
+                <div class="row">
+                    <p style="color: black;" id="team-intro">
+                        We are a team of 4 students from Augustana College, working on this project as part of our Senior Graduating Project. 
+                        Our goal is to create a user-friendly platform that helps Augie's Campus Cupboard manage their inventory and connect with volunteers.
+                    </p>
+                    <div class="col-md-3 text-center">
+                        <img src="{{ url_for('static', filename='images/amine.jpg') }}" alt="Team Image" class="img-fluid">
+                        <p>Amine</p>
+                        <p id="roles">Software Developer</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <img src="{{ url_for('static', filename='images/ian.webp') }}" alt="Team Image" class="img-fluid">
+                        <p>Ian</p>
+                        <p id="roles">Software Developer</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <img src="{{ url_for('static', filename='images/nick.webp') }}" alt="Team Image" class="img-fluid">
+                        <p>Nick</p>
+                        <p id="roles">UI/UX Software Developer</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <img src="{{ url_for('static', filename='images/minh.webp') }}" alt="Team Image" class="img-fluid">
+                        <p>Minh</p>
+                        <p id="roles">UI/UX Software Developer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
             <div class="card mb-4">
                 <div class="card-body">
