@@ -40,6 +40,16 @@ class StudentInput(db.Model):
     pounds_taken = db.Column(db.Float, nullable=False) 
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
 
+#class to make table for id swipe and now with clothes taken
+class StudentInputFull(db.Model):
+    __tablename__ = 'student_inputs_full'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    student_id = db.Column(db.String, nullable=False)
+    pounds_taken = db.Column(db.Float, nullable=False) 
+    clothes_taken = db.Column(db.Float, nullable=False)
+    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
+
+
 #class to make volunteer table
 class Volunteer(db.Model):
     __tablename__ = 'volunteers'
@@ -162,8 +172,10 @@ def student_input():
         student_id = request.form.get('studentID')
         pounds_taken = request.form.get('poundsTaken')
         pounds_taken = float(pounds_taken)
-        
-        new_input = StudentInput(student_id=student_id, pounds_taken=pounds_taken)
+        clothes_taken = request.form.get('clothesTaken')
+        clothes_taken = float(clothes_taken)
+
+        new_input = StudentInputFull(student_id=student_id, pounds_taken=pounds_taken, clothes_taken=clothes_taken)
         db.session.add(new_input)
         db.session.commit()
         
@@ -181,12 +193,12 @@ def data_dashboard():
     total_student_count = db.session.query(StudentInput.student_id).count()
     avg_visits_per_user = round(total_student_count / distinct_student_count, 2)
 
-    #calculate the average visits per day
-    total_visits = Counter(input.timestamp.date() for input in student_inputs)
+    #calculate the average visits per day - counter for # of visits per day
+    total_visits = Counter(input.timestamp.date() for input in student_inputs) #visits per date
     avg_visits_per_day = round(mean(total_visits.values()))
-    day_of_week_visits = Counter(input.timestamp.weekday() for input in student_inputs)
+    day_of_week_visits = Counter(input.timestamp.weekday() for input in student_inputs) #visits per day of the week
     
-    #map the days
+    #map the days for queries and start day of monday
     weekday_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     
     #find the most visited day (highest count)
@@ -197,6 +209,10 @@ def data_dashboard():
     #total # of pounds taken
     total_pounds_taken = db.session.query(db.func.sum(StudentInput.pounds_taken)).scalar()
     avg_lbs_per_day = round(total_pounds_taken / len(total_visits), 2)
+
+    #filter data to allow view of daily, weekly, monthly, and yearly data
+
+    #create visuals including mon - fri avg visits for busiest day of the week
 
     #returns the html and sends the data to it to display
     return render_template('data_dashboard.html',
