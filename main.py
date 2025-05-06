@@ -198,11 +198,10 @@ def data_dashboard():
     highest_num_of_visits = max(total_visits.values(), default=0)
 
     #total # of pounds taken
-    total_pounds_taken = db.session.query(db.func.sum(StudentInputFull.pounds_taken)).scalar() or 0
+    total_pounds_taken = db.session.query(db.func.sum(StudentInputFull.pounds_taken)).scalar()
     total_pounds_taken = round(total_pounds_taken, 2)
 
-    avg_lbs_per_day = round(total_pounds_taken / len(total_visits), 2) if total_visits else 0
-
+    avg_lbs_per_day = round(total_pounds_taken / len(total_visits), 2) if total_visits else 0 #to stop division error
 
     #clothing data
     total_clothes_taken = db.session.query(db.func.sum(StudentInputFull.clothes_taken)).scalar()
