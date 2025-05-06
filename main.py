@@ -32,23 +32,14 @@ UTC_TZ = ZoneInfo("UTC")
 
 app.permanent_session_lifetime = timedelta(minutes=2)  # Set session timeout to 30 minutes
  
-#class to make table for id swipe
-class StudentInput(db.Model):
-    __tablename__ = 'student_inputs'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    student_id = db.Column(db.String, nullable=False)
-    pounds_taken = db.Column(db.Float, nullable=False) 
-    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
-
 #class to make table for id swipe and now with clothes taken
 class StudentInputFull(db.Model):
     __tablename__ = 'student_inputs_full'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     student_id = db.Column(db.String, nullable=False)
     pounds_taken = db.Column(db.Float, nullable=False) 
-    clothes_taken = db.Column(db.Float, nullable=False)
+    clothes_taken = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
-
 
 #class to make volunteer table
 class Volunteer(db.Model):
@@ -185,12 +176,12 @@ def student_input():
 @app.route('/data_dashboard', methods=['GET', 'POST']) 
 def data_dashboard():
 
-    #all the swipes in the table StudentInput
-    student_inputs = StudentInput.query.all()
+    #all the swipes in the table StudentInputFull
+    student_inputs = StudentInputFull.query.all()
 
     #distinct student ID count
-    distinct_student_count = db.session.query(StudentInput.student_id).distinct().count()
-    total_student_count = db.session.query(StudentInput.student_id).count()
+    distinct_student_count = db.session.query(StudentInputFull.student_id).distinct().count()
+    total_student_count = db.session.query(StudentInputFull.student_id).count()
     avg_visits_per_user = round(total_student_count / distinct_student_count, 2)
 
     #calculate the average visits per day - counter for # of visits per day
@@ -207,22 +198,26 @@ def data_dashboard():
     highest_num_of_visits = max(total_visits.values(), default=0)
 
     #total # of pounds taken
-    total_pounds_taken = db.session.query(db.func.sum(StudentInput.pounds_taken)).scalar()
-    avg_lbs_per_day = round(total_pounds_taken / len(total_visits), 2)
+    total_pounds_taken = db.session.query(db.func.sum(StudentInputFull.pounds_taken)).scalar() or 0
+    total_pounds_taken = round(total_pounds_taken, 2)
 
-    #filter data to allow view of daily, weekly, monthly, and yearly data
+    avg_lbs_per_day = round(total_pounds_taken / len(total_visits), 2) if total_visits else 0
 
-    #create visuals including mon - fri avg visits for busiest day of the week
+
+    #clothing data
+    total_clothes_taken = db.session.query(db.func.sum(StudentInputFull.clothes_taken)).scalar()
+    total_clothes_taken = int(total_clothes_taken)
 
     #returns the html and sends the data to it to display
     return render_template('data_dashboard.html',
                            total_student_count=total_student_count, 
-                           distinct_user_count=distinct_student_count, 
-                           total_lbs_taken=total_pounds_taken,
+                           distinct_student_count=distinct_student_count, 
+                           total_pounds_taken=total_pounds_taken,
                            avg_visits_per_day=avg_visits_per_day,
                            most_visited_day=most_visited_day,
                            avg_visits_per_user=avg_visits_per_user,
                            avg_lbs_per_day=avg_lbs_per_day,
+                           total_clothes_taken=total_clothes_taken,
                            highest_num_of_visits=highest_num_of_visits)
 
 

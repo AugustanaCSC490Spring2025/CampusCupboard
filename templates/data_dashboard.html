@@ -1,45 +1,47 @@
 {% extends "base.html" %}
 {% block content %}
 
-
-<div class ="data-dashboard">
-    <h1 style="text-align: center;">Data Dashboard</h1>
-    <div class ="data-container">
-        <section id="user-ids">
-            <h2>User ID Data</h2>
-            <ul>
-                <li>Total Number of Students Served (total swipes): {{ total_student_count }}</li>
-                <li>Distinct Number of Students Served: {{ distinct_user_count }}</li>
-                <li>Average Number of Visits per User: {{ avg_visits_per_user }}</li>
-                
-            </ul>
-        </section>
-
-        <section id="poundage">
-            <h2>Food Poundage Data</h2>
-            <ul>
-                <li>Total Pounds Distributed: {{ total_lbs_taken }}</li>
-                <li>Average Pounds Distributed Per day: {{avg_lbs_per_day}}</li>
-
-            </ul>
-        </section>
-
-        <section id="timestamp-data">
-            <h2>Timestamp Data</h2>
-            <ul>
-                <li>Most Visited Day of the Week: {{ most_visited_day }}</li>
-                <li>Average Visits Per Day: {{ avg_visits_per_day }}</li>
-                <li>Highest Number of Visits in a Day: {{highest_num_of_visits}}</li>
-            </ul>
-            
-            <form action="{{ url_for('download_csv') }}" method="get">
-                <button type="submit" class="btn btn-primary">Download Data</button>
-            </form>
-            
-        </section>
-    </div>
+<div class="dashboard-container">
+    <h1 class="dashboard-title">Data Dashboard</h1>
     
-</div>
+    <div class="grid-dashboard">
         
-    <script src="/static/scripts.js"></script>
+        <!--ID data -->
+        <section class="data-card">
+            <h2>User ID Metrics</h2>
+            <div class="metric"><strong>Total Swipes:</strong> {{ total_student_count }}</div>
+            <div class="metric"><strong>Distinct Users:</strong> {{ distinct_student_count }}</div>
+            <div class="metric"><strong>Avg Visits/User:</strong> {{ avg_visits_per_user }}</div>
+        </section>
+
+        <!-- food poundage -->
+        <section class="data-card">
+            <h2>Food Distribution</h2>
+            <div class="metric"><strong>Total Lbs Distributed:</strong> {{ total_pounds_taken }}</div>
+            <div class="metric"><strong>Avg Lbs/Day:</strong> {{ avg_lbs_per_day  }}</div>
+        </section>
+
+        <!-- timestamp data -->
+        <section class="data-card">
+            <h2>Visit Timing</h2>
+            <div class="metric"><strong>Most Visited Day:</strong> {{ most_visited_day }}</div>
+            <div class="metric"><strong>Avg Visits/Day:</strong> {{ avg_visits_per_day }}</div>
+            <div class="metric"><strong>Peak Daily Visits:</strong> {{ highest_num_of_visits }}</div>
+        </section>
+
+        <!-- clothing data -->
+        <section class="data-card">
+            <h2>Clothing Info</h2>
+            <div class="metric"><strong>Total Items Taken:</strong> {{total_clothes_taken | int}}</div>
+        </section>
+
+    </div>
+
+    <!--download button -->
+    <div class="download-section">
+        <form action="{{ url_for('download_csv') }}" method="get">
+            <button type="submit" class="download-btn">⬇️ Download CSV</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

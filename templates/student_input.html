@@ -63,7 +63,7 @@
             const poundsTaken = document.getElementById('poundsTaken');
             const clothesTaken = document.getElementById('clothesTaken');
             const poundsValue = parseFloat(poundsTaken.value);
-            const clothesValue = parseFloat(clothesTaken.value);
+            const clothesValue = parseInt(clothesTaken.value, 10);
 
             studentID.value = studentID.value.replace(/\D/g, '').slice(-7);
 
@@ -75,21 +75,21 @@
                 studentID.setCustomValidity("");
             }
 
-            if (isNaN(poundsValue) || poundsValue < 1 || poundsValue > 1000) {
-                poundsTaken.setCustomValidity("Please enter a valid number of pounds between 1 and 1000.");
+            if (isNaN(poundsValue) || poundsValue < 1 || poundsValue > 100) {
+                poundsTaken.setCustomValidity("Please enter a valid number of pounds between 1 and 100.");
                 poundsTaken.reportValidity();
                 return false;
             } else {
                 poundsTaken.setCustomValidity("");
             }
 
-            if (isNaN(clothesValue) || clothesValue < 1 || clothesValue > 1000) {
-                clothesTaken.setCustomValidity("Please enter a valid number of clothes between 1 and 1000.");
+            if (isNaN(clothesValue) || clothesValue < 0 || clothesValue > 100) {
+                clothesTaken.setCustomValidity("Please enter a valid number of clothes between 0 and 100.");
                 clothesTaken.reportValidity();
                 return false;
             } else {
                 clothesTaken.setCustomValidity("");
-            }
+        }
 
             return true;
         }
@@ -110,18 +110,18 @@
                 </div>
                 <div class="mb-3">
                     <label for="poundsTaken" class="form-label">Pounds taken</label>
-                    <input type="number" class="form-control" id="poundsTaken" name="poundsTaken" required disabled readonly min="1" max="1000" step="0.01">
+                    <input type="number" class="form-control" id="poundsTaken" name="poundsTaken" required disabled readonly min="1" max="100" step="0.01">
                     <div class="invalid-feedback">
                         Please enter a valid number of pounds between 1 and 1000.
                     </div>
                 </div>
                 <div class="mb-3">
                     <label for="clothesTaken" class="form-label">Clothes taken</label>
-                    <input type="number" class="form-control" id="clothesTaken" name="clothesTaken" required disabled readonly min="1" max="1000" step="0.01">
+                    <input type="number" class="form-control" id="clothesTaken" name="clothesTaken" required disabled readonly min="0" max="100" step="1">
                     <div class="invalid-feedback">
-                        Please enter a valid number of clothes between 1 and 1000.
+                        Please enter a valid number of clothes between 0 and 100.
                     </div>
-                </div>
+                </div>                
                 <button type="submit" class="btn btn-primary w-100">SUBMIT</button>
             </form>
         </div>
