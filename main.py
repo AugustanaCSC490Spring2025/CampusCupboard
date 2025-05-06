@@ -224,18 +224,18 @@ def data_dashboard():
 @app.route('/download_csv')
 def download_csv():
     #swipe data query
-    student_inputs = StudentInput.query.all()
+    student_inputs = StudentInputFull.query.all()
 
     #stores it to memory
     si = StringIO()
     writer = csv.writer(si)
     
     #csv header
-    writer.writerow(['student_id', 'pounds_taken', 'timestamp'])
+    writer.writerow(['student_id', 'pounds_taken', 'clothes_taken', 'timestamp'])
     
     # data to rows in csv file
     for input in student_inputs:
-        writer.writerow([input.student_id, input.pounds_taken, input.timestamp])
+        writer.writerow([input.student_id, input.pounds_taken, input.clothes_taken, input.timestamp])
 
     #flask response as a csv file to donwload
     response = Response(si.getvalue(), content_type='text/csv')
