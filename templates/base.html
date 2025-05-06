@@ -15,32 +15,30 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--augie-blue);">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                Augustana College<br>Campus Cupboard
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/campus_cupboard_logo.jpg') }}" alt="Campus Cupboard Logo" style="height: 70px; margin-right: 10px;">                Campus Cupboard
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('about') }}">About us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('volunteer') }}">Volunteer</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin') }}">Admin only</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('inventory') }}">Inventory Feed</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('volunteer') }}">Volunteer</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin') }}">Admin only</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    
+
     {% block content %}
     {% endblock %}
+
+    <!-- Bootstrap 5 JS Bundle (includes Popper.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

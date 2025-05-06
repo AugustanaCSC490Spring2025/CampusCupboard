@@ -143,77 +143,6 @@ body::before {
 
 }
 
-.meet-team p{
-    color: black;
-    margin-top: 0.5rem;
-}
-
-.data-dashboard {
-    background-color: white;
-    margin-top: 4rem;
-    margin-left: 2rem;
-    margin-right: 2rem;
-    margin-bottom: 4rem;
-    padding: 1.5rem;
-    border-radius: 15px;
-}
-
-.data-container {
-    margin-top: 4rem;
-    margin-bottom: 4rem;
-}
-
-.dashboard-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    font-family: Arial, sans-serif;
-}
-
-.dashboard-title {
-    text-align: center;
-    margin-bottom: 2rem;
-    font-size: 2.5rem;
-    color: #ffffff;
-}
-
-.grid-dashboard {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-.data-card {
-    background: #f8f9fa;
-    padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-.data-card h2 {
-    margin-bottom: 1rem;
-    color: #007bff;
-    font-size: 1.4rem;
-}
-.metric {
-    margin: 0.5rem 0;
-    font-size: 1.1rem;
-}
-.download-section {
-    text-align: center;
-    margin-top: 2rem;
-}
-.download-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-.download-btn:hover {
-    background-color: #0056b3;
-}
-
 .meet-team {
     text-align: center;
     background-color: white;
@@ -230,6 +159,42 @@ body::before {
     padding-left: 1rem;
     padding-right: 1rem;
     border-radius: 15px;
+    margin-top: 2rem;
+}
+
+.meet-team h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.meet-team p {
+    font-size: 1.1rem;
+    margin-bottom: 0;
+    margin: 0.5rem 0;
+}
+
+.meet-team p#team-intro {
+    color: black;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.meet-team .col-md-3 {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.meet-team .img-fluid {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%; /* Makes the images circular */
+}
+
+.meet-team p#roles {
+    font-style: italic;
+    color: gray;
 }
 
 #roles {
@@ -248,17 +213,6 @@ body::before {
 #team-intro {
     margin-bottom: 0.5rem;
 }
-
-.meet-team h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-}
-
-.meet-team p {
-    font-size: 1.1rem;
-    margin-bottom: 0;
-}
-
 
 .chart{
     background-color: black;
@@ -505,6 +459,38 @@ body::before {
 
     .photo-grid {
         grid-template-columns: 1fr;
+    }
+
+    #uploadForm {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #imageInput,
+    #descriptionInput,
+    .confirm-btn {
+        max-width: 100%;
+    }
+
+    .photo-title {
+        font-size: 1.5rem;
+    }
+
+    .meet-team .col-md-3 {
+        margin-bottom: 1rem;
+    }
+
+    .meet-team .img-fluid {
+        width: 100px;
+        height: 100px;
+    }
+
+    .meet-team p {
+        font-size: 1rem;
+    }
+
+    .ratio iframe {
+        height: 100%;
     }
 }
 
