@@ -263,6 +263,58 @@ body::before {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for better visibility */
 }
 
+/* for data dashboard page */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: Arial, sans-serif;
+}
+
+.dashboard-title {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    color: #ffffff;
+}
+
+.grid-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+.data-card {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.data-card h2 {
+    margin-bottom: 1rem;
+    color: #007bff;
+    font-size: 1.4rem;
+}
+.metric {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+.download-section {
+    text-align: center;
+    margin-top: 2rem;
+}
+.download-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.download-btn:hover {
+    background-color: #0056b3;
+}
+
 .msg-inner-container {
     background: darkgray;
     padding: 1rem;
