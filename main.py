@@ -175,45 +175,47 @@ def student_input():
 
 @app.route('/data_dashboard', methods=['GET', 'POST']) 
 def data_dashboard():
-    #start and end dates for filter
-    #format: YYYY-MM-DD
+    # Start and end dates for filter
+    # Format: YYYY-MM-DD
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
 
-    #filter the data
+    # Filter the data
     if start_date and end_date:
         start_time = datetime.strptime(start_date, '%Y-%m-%d').replace(tzinfo=UTC_TZ)
         end_time = datetime.strptime(end_date, '%Y-%m-%d').replace(tzinfo=UTC_TZ) + timedelta(days=1)
         student_inputs = StudentInputFull.query.filter(StudentInputFull.timestamp >= start_time, StudentInputFull.timestamp < end_time).all()
     else:
-        #default of full query of data
+        # Default to full query of data
         student_inputs = StudentInputFull.query.all()
 
-    # student ID logic
-    distinct_student_count = db.session.query(StudentInputFull.student_id).distinct().count()
-    total_student_count = db.session.query(StudentInputFull.student_id).count()
-    avg_visits_per_user = round(total_student_count / distinct_student_count, 2)
+    # Student ID logic
+    distinct_student_count = db.session.query(db.func.count(db.distinct(StudentInputFull.student_id))).scalar()
+    total_student_count = len(student_inputs)
 
-    # pounds per day (Monday through Friday)
+    # Handle division by zero for avg_visits_per_user
+    avg_visits_per_user = round(total_student_count / distinct_student_count, 2) if distinct_student_count > 0 else 0
+
+    # Pounds per day (Monday through Friday)
     weekday_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    pounds_per_day = {day: 0 for day in weekday_names[:5]}  #initialize Monday-Friday with 0
+    pounds_per_day = {day: 0 for day in weekday_names[:5]}  # Initialize Monday-Friday with 0
     for swipe in student_inputs:
-        day_of_week = swipe.timestamp.weekday() #day of week starts with 0
-        if day_of_week < 5:  #monday - friday
+        day_of_week = swipe.timestamp.weekday()  # Day of week starts with 0
+        if day_of_week < 5:  # Monday - Friday
             day_name = weekday_names[day_of_week]
             pounds_per_day[day_name] += swipe.pounds_taken
 
-    #total pounds taken
+    # Total pounds taken
     total_pounds_taken = sum(swipe.pounds_taken for swipe in student_inputs)
     total_pounds_taken = round(total_pounds_taken, 2)
 
-    #average pounds per day
-    avg_lbs_per_day = round(total_pounds_taken / len(pounds_per_day), 2) if pounds_per_day else 0
+    # Handle division by zero for avg_lbs_per_day
+    avg_lbs_per_day = round(total_pounds_taken / len(pounds_per_day), 2) if len(pounds_per_day) > 0 else 0
 
-    #clothing data
+    # Clothing data
     total_clothes_taken = sum(swipe.clothes_taken for swipe in student_inputs)
 
-    #for html returns
+    # For HTML returns
     return render_template('data_dashboard.html',
                            total_student_count=total_student_count, 
                            distinct_student_count=distinct_student_count, 
