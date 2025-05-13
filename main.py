@@ -5,11 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from werkzeug.utils import secure_filename
-from collections import Counter
+from collections import Counter, defaultdict
 from statistics import mean
-from collections import defaultdict
-
-
 import csv
 
 #for env file 
@@ -39,7 +36,7 @@ app.permanent_session_lifetime = timedelta(minutes=2)  # Set session timeout to 
 class StudentInputFull(db.Model):
     __tablename__ = 'student_inputs_full'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    student_id = db.Column(db.String, nullable=False)
+    student_id = db.Column(db.Integer, nullable=False)
     pounds_taken = db.Column(db.Float, nullable=False) 
     clothes_taken = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
@@ -178,60 +175,55 @@ def student_input():
 
 @app.route('/data_dashboard', methods=['GET', 'POST']) 
 def data_dashboard():
+    #start and end dates for filter
+    #format: YYYY-MM-DD
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
 
-    #all the swipes in the table StudentInputFull
-    student_inputs = StudentInputFull.query.all()
+    #filter the data
+    if start_date and end_date:
+        start_time = datetime.strptime(start_date, '%Y-%m-%d').replace(tzinfo=UTC_TZ)
+        end_time = datetime.strptime(end_date, '%Y-%m-%d').replace(tzinfo=UTC_TZ) + timedelta(days=1)
+        student_inputs = StudentInputFull.query.filter(StudentInputFull.timestamp >= start_time, StudentInputFull.timestamp < end_time).all()
+    else:
+        #default of full query of data
+        student_inputs = StudentInputFull.query.all()
 
-    #distinct student ID count
+    # student ID logic
     distinct_student_count = db.session.query(StudentInputFull.student_id).distinct().count()
     total_student_count = db.session.query(StudentInputFull.student_id).count()
     avg_visits_per_user = round(total_student_count / distinct_student_count, 2)
 
-    #calculate the average visits per day - counter for # of visits per day
-    total_visits = Counter(input.timestamp.date() for input in student_inputs) #visits per date
-    avg_visits_per_day = round(mean(total_visits.values()))
-    day_of_week_visits = Counter(input.timestamp.weekday() for input in student_inputs) #visits per day of the week
-    
-    #map the days for queries and start day of monday
+    # pounds per day (Monday through Friday)
     weekday_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    
-    #find the most visited day (highest count)
-    most_visited_day_index = max(day_of_week_visits, key=day_of_week_visits.get, default=None)
-    most_visited_day = weekday_names[most_visited_day_index]
-    highest_num_of_visits = max(total_visits.values(), default=0)
+    pounds_per_day = {day: 0 for day in weekday_names[:5]}  #initialize Monday-Friday with 0
+    for swipe in student_inputs:
+        day_of_week = swipe.timestamp.weekday() #day of week starts with 0
+        if day_of_week < 5:  #monday - friday
+            day_name = weekday_names[day_of_week]
+            pounds_per_day[day_name] += swipe.pounds_taken
 
-    #total # of pounds taken
-    total_pounds_taken = db.session.query(db.func.sum(StudentInputFull.pounds_taken)).scalar()
+    #total pounds taken
+    total_pounds_taken = sum(swipe.pounds_taken for swipe in student_inputs)
     total_pounds_taken = round(total_pounds_taken, 2)
 
-    avg_lbs_per_day = round(total_pounds_taken / len(total_visits), 2) if total_visits else 0 #to stop division error
+    #average pounds per day
+    avg_lbs_per_day = round(total_pounds_taken / len(pounds_per_day), 2) if pounds_per_day else 0
 
     #clothing data
-    total_clothes_taken = db.session.query(db.func.sum(StudentInputFull.clothes_taken)).scalar()
-    total_clothes_taken = int(total_clothes_taken)
+    total_clothes_taken = sum(swipe.clothes_taken for swipe in student_inputs)
 
-    weekday_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    pounds_per_day = {day: 0.0 for day in weekday_names[:5]}  # Initialize Monday-Friday with 0
-    for swipe in student_inputs:
-        day_of_week = swipe.timestamp.weekday()  # Get the day of the week (0=Monday, 6=Sunday)
-        if day_of_week < 5:  # Only include Monday-Friday
-            day_name = weekday_names[day_of_week]
-            pounds_per_day[day_name] += float(swipe.pounds_taken)
-
-    print("Pounds per day:", pounds_per_day)
-    #returns the html and sends the data to it to display
+    #for html returns
     return render_template('data_dashboard.html',
                            total_student_count=total_student_count, 
                            distinct_student_count=distinct_student_count, 
                            total_pounds_taken=total_pounds_taken,
-                           avg_visits_per_day=avg_visits_per_day,
-                           most_visited_day=most_visited_day,
                            avg_visits_per_user=avg_visits_per_user,
                            avg_lbs_per_day=avg_lbs_per_day,
                            total_clothes_taken=total_clothes_taken,
-                           highest_num_of_visits=highest_num_of_visits,
                            pounds_per_day=pounds_per_day,
-                           )
+                           start_date=start_date,
+                           end_date=end_date)
 
 
 #csv data file download - code help from https://stackoverflow.com/questions/33766499/flask-button-to-save-table-from-query-as-csv

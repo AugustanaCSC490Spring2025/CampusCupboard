@@ -1,52 +1,60 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="dashboard-container d-flex">
+    <!-- Filter Section -->
+    <div class="filter-section p-3 border-end" style="width: 200px;">
+        <h4>Filter Data</h4>
+        <form method="GET" action="{{ url_for('data_dashboard') }}">
+            <label for="start_date" class="form-label">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" class="form-control mb-3" value="{{ start_date }}">
 
-<div class="dashboard-container">
-    <h1 class="dashboard-title">Data Dashboard</h1>
-    
-    <div class="grid-dashboard">
-        
-        <!--ID data -->
-        <section class="data-card">
-            <h2>User ID Metrics</h2>
-            <div class="metric"><strong>Total Swipes:</strong> {{ total_student_count }}</div>
-            <div class="metric"><strong>Distinct Users:</strong> {{ distinct_student_count }}</div>
-            <div class="metric"><strong>Avg Visits/User:</strong> {{ avg_visits_per_user }}</div>
-        </section>
+            <label for="end_date" class="form-label">End Date:</label>
+            <input type="date" id="end_date" name="end_date" class="form-control mb-3" value="{{ end_date }}">
 
-        <!-- food poundage -->
-        <section class="data-card">
-            <h2>Food Distribution</h2>
-            <div class="metric"><strong>Total Lbs Distributed:</strong> {{ total_pounds_taken }}</div>
-            <div class="metric"><strong>Avg Lbs/Day:</strong> {{ avg_lbs_per_day  }}</div>
-        </section>
+            <button type="submit" class="btn btn-primary w-100">Apply</button>
+        </form>
+    </div>
 
-        <!-- timestamp data -->
-        <section class="data-card">
-            <h2>Visit Timing</h2>
-            <div class="metric"><strong>Most Visited Day:</strong> {{ most_visited_day }}</div>
-            <div class="metric"><strong>Avg Visits/Day:</strong> {{ avg_visits_per_day }}</div>
-            <div class="metric"><strong>Peak Daily Visits:</strong> {{ highest_num_of_visits }}</div>
-        </section>
+    <!-- Data Section -->
+    <div class="data-section flex-grow-1 p-3">
+        <div class="grid-dashboard">
 
-        <!-- clothing data -->
-        <section class="data-card">
-            <h2>Clothing Info</h2>
-            <div class="metric"><strong>Total Items Taken:</strong> {{total_clothes_taken | int}}</div>
-        </section>
+            <!-- rime card -->
+            <section class="data-card">
+                <h2>Visit Timing</h2>
+                <div class="metric"><strong>Total Visits:</strong> {{ total_student_count }}</div>
+                <div class="metric"><strong>Distinct Students:</strong> {{ distinct_student_count }}</div>
+                <div class="metric"><strong>Avg Visits/User:</strong> {{ avg_visits_per_user }}</div>
+            </section>
+            
+            <!-- food card -->
+            <section class="data-card">
+                <h2>Food Distribution</h2>
+                <div class="metric"><strong>Total Lbs Distributed:</strong> {{ total_pounds_taken }}</div>
+                <div class="metric"><strong>Avg Lbs/Day:</strong> {{ avg_lbs_per_day }}</div>
+            </section>
 
-        <div class="chart">
+            <!-- clothing card -->
+            <section class="data-card">
+                <h2>Clothing Info</h2>
+                <div class="metric"><strong>Total Items Taken:</strong> {{ total_clothes_taken }}</div>
+            </section>
+
+            <!-- lbs per day -->
+            <section class="data-card">
+                <h2>Pounds Taken Per Day (Monday to Friday)</h2>
+                <ul>
+                    {% for day, pounds in pounds_per_day.items() %}
+                        <li><strong>{{ day }}:</strong> {{ pounds }} lbs</li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+            <div class="chart">
             <h2>Food and Clothes for Days</h2>
             <canvas id="myChart" width="500px"></canvas>
         </div>
-
-    </div>
-
-    <!--download button -->
-    <div class="download-section">
-        <form action="{{ url_for('download_csv') }}" method="get">
-            <button type="submit" class="download-btn">⬇️ Download CSV</button>
-        </form>
+        </div>
     </div>
 </div>
 
@@ -83,5 +91,5 @@
     }
   });
 </script>
-
 {% endblock %}
+

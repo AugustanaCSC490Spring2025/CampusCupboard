@@ -7,16 +7,24 @@
             const studentIDInput = document.getElementById('studentID');
             const studentID = studentIDInput.value;
             const poundsTaken = document.getElementById('poundsTaken');
-    
+            const clothesTaken = document.getElementById('clothesTaken');
+
             if (studentID.trim() !== '' && studentID.length === 7) {
                 poundsTaken.disabled = false;
                 poundsTaken.readOnly = false;
+                clothesTaken.disabled = false;
+                clothesTaken.readOnly = false;
+                studentIDInput.setCustomValidity("");
             } else {
                 poundsTaken.disabled = true;
                 poundsTaken.readOnly = true;
+                clothesTaken.disabled = true;
+                clothesTaken.readOnly = true;
+                studentIDInput.setCustomValidity("Please enter a valid 7-digit student ID."); // ⚠️ Still invalid
+
             }
         }
-    
+
         function cleanStudentIDInput() {
             const input = document.getElementById('studentID');
             let raw = input.value;
@@ -27,10 +35,10 @@
                 const swipeMatch = raw.match(/;(\d+)=/);
                 console.log('Swipe match:', swipeMatch);
                 if (swipeMatch) {
-                    let digits = swipeMatch[1]; 
+                    let digits = swipeMatch[1];
                     console.log('Digits:', digits);
-                    // take the last 7 numbers 
-                    input.value = digits.slice(-7); 
+                    // take the last 7 numbers
+                    input.value = digits.slice(-7);
                 } else {
                     input.value = '';
                 }
@@ -42,7 +50,7 @@
 
             checkStudentID();
         }
-    
+
         document.addEventListener("DOMContentLoaded", function () {
             const studentIDInput = document.getElementById('studentID');
             studentIDInput.addEventListener('keypress', function (e) {
@@ -52,14 +60,16 @@
                 }
             });
         });
-    
+
         function validateForm() {
             const studentID = document.getElementById('studentID');
             const poundsTaken = document.getElementById('poundsTaken');
+            const clothesTaken = document.getElementById('clothesTaken');
             const poundsValue = parseFloat(poundsTaken.value);
-    
+            const clothesValue = parseInt(clothesTaken.value, 10);
+
             studentID.value = studentID.value.replace(/\D/g, '').slice(-7);
-    
+            console.log("Student ID after cleaning: '" + studentID.value+"'"); 
             if (studentID.value.length !== 7) {
                 studentID.setCustomValidity("Please enter a valid 7-digit student ID.");
                 studentID.reportValidity();
@@ -67,15 +77,23 @@
             } else {
                 studentID.setCustomValidity("");
             }
-    
-            if (isNaN(poundsValue) || poundsValue < 1 || poundsValue > 1000) {
-                poundsTaken.setCustomValidity("Please enter a valid number of pounds between 1 and 1000.");
+
+            if (isNaN(poundsValue) || poundsValue < 1 || poundsValue > 100) {
+                poundsTaken.setCustomValidity("Please enter a valid number of pounds between 1 and 100.");
                 poundsTaken.reportValidity();
                 return false;
             } else {
                 poundsTaken.setCustomValidity("");
             }
-    
+
+            if (isNaN(clothesValue) || clothesValue < 0 || clothesValue > 100) {
+                clothesTaken.setCustomValidity("Please enter a valid number of clothes between 0 and 100.");
+                clothesTaken.reportValidity();
+                return false;
+            } else {
+                clothesTaken.setCustomValidity("");
+        }
+
             return true;
         }
     </script>
@@ -95,11 +113,18 @@
                 </div>
                 <div class="mb-3">
                     <label for="poundsTaken" class="form-label">Pounds taken</label>
-                    <input type="number" class="form-control" id="poundsTaken" name="poundsTaken" required disabled readonly min="1" max="1000" step="0.01">
+                    <input type="number" class="form-control" id="poundsTaken" name="poundsTaken" required disabled readonly min="1" max="100" step="0.01">
                     <div class="invalid-feedback">
                         Please enter a valid number of pounds between 1 and 1000.
                     </div>
                 </div>
+                <div class="mb-3">
+                    <label for="clothesTaken" class="form-label">Clothes taken</label>
+                    <input type="number" class="form-control" id="clothesTaken" name="clothesTaken" required disabled readonly min="0" max="100" step="1">
+                    <div class="invalid-feedback">
+                        Please enter a valid number of clothes between 0 and 100.
+                    </div>
+                </div>                
                 <button type="submit" class="btn btn-primary w-100">SUBMIT</button>
             </form>
         </div>
