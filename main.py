@@ -7,6 +7,9 @@ from zoneinfo import ZoneInfo
 from werkzeug.utils import secure_filename
 from collections import Counter
 from statistics import mean
+from collections import defaultdict
+
+
 import csv
 
 #for env file 
@@ -32,12 +35,13 @@ UTC_TZ = ZoneInfo("UTC")
 
 app.permanent_session_lifetime = timedelta(minutes=2)  # Set session timeout to 30 minutes
  
-#class to make table for id swipe
-class StudentInput(db.Model):
-    __tablename__ = 'student_inputs'
+#class to make table for id swipe and now with clothes taken
+class StudentInputFull(db.Model):
+    __tablename__ = 'student_inputs_full'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     student_id = db.Column(db.String, nullable=False)
     pounds_taken = db.Column(db.Float, nullable=False) 
+    clothes_taken = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
 
 #class to make volunteer table
@@ -162,8 +166,10 @@ def student_input():
         student_id = request.form.get('studentID')
         pounds_taken = request.form.get('poundsTaken')
         pounds_taken = float(pounds_taken)
-        
-        new_input = StudentInput(student_id=student_id, pounds_taken=pounds_taken)
+        clothes_taken = request.form.get('clothesTaken')
+        clothes_taken = float(clothes_taken)
+
+        new_input = StudentInputFull(student_id=student_id, pounds_taken=pounds_taken, clothes_taken=clothes_taken)
         db.session.add(new_input)
         db.session.commit()
         
@@ -173,20 +179,20 @@ def student_input():
 @app.route('/data_dashboard', methods=['GET', 'POST']) 
 def data_dashboard():
 
-    #all the swipes in the table StudentInput
-    student_inputs = StudentInput.query.all()
+    #all the swipes in the table StudentInputFull
+    student_inputs = StudentInputFull.query.all()
 
     #distinct student ID count
-    distinct_student_count = db.session.query(StudentInput.student_id).distinct().count()
-    total_student_count = db.session.query(StudentInput.student_id).count()
+    distinct_student_count = db.session.query(StudentInputFull.student_id).distinct().count()
+    total_student_count = db.session.query(StudentInputFull.student_id).count()
     avg_visits_per_user = round(total_student_count / distinct_student_count, 2)
 
-    #calculate the average visits per day
-    total_visits = Counter(input.timestamp.date() for input in student_inputs)
+    #calculate the average visits per day - counter for # of visits per day
+    total_visits = Counter(input.timestamp.date() for input in student_inputs) #visits per date
     avg_visits_per_day = round(mean(total_visits.values()))
-    day_of_week_visits = Counter(input.timestamp.weekday() for input in student_inputs)
+    day_of_week_visits = Counter(input.timestamp.weekday() for input in student_inputs) #visits per day of the week
     
-    #map the days
+    #map the days for queries and start day of monday
     weekday_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     
     #find the most visited day (highest count)
@@ -195,37 +201,55 @@ def data_dashboard():
     highest_num_of_visits = max(total_visits.values(), default=0)
 
     #total # of pounds taken
-    total_pounds_taken = db.session.query(db.func.sum(StudentInput.pounds_taken)).scalar()
-    avg_lbs_per_day = round(total_pounds_taken / len(total_visits), 2)
+    total_pounds_taken = db.session.query(db.func.sum(StudentInputFull.pounds_taken)).scalar()
+    total_pounds_taken = round(total_pounds_taken, 2)
 
+    avg_lbs_per_day = round(total_pounds_taken / len(total_visits), 2) if total_visits else 0 #to stop division error
+
+    #clothing data
+    total_clothes_taken = db.session.query(db.func.sum(StudentInputFull.clothes_taken)).scalar()
+    total_clothes_taken = int(total_clothes_taken)
+
+    weekday_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    pounds_per_day = {day: 0.0 for day in weekday_names[:5]}  # Initialize Monday-Friday with 0
+    for swipe in student_inputs:
+        day_of_week = swipe.timestamp.weekday()  # Get the day of the week (0=Monday, 6=Sunday)
+        if day_of_week < 5:  # Only include Monday-Friday
+            day_name = weekday_names[day_of_week]
+            pounds_per_day[day_name] += float(swipe.pounds_taken)
+
+    print("Pounds per day:", pounds_per_day)
     #returns the html and sends the data to it to display
     return render_template('data_dashboard.html',
                            total_student_count=total_student_count, 
-                           distinct_user_count=distinct_student_count, 
-                           total_lbs_taken=total_pounds_taken,
+                           distinct_student_count=distinct_student_count, 
+                           total_pounds_taken=total_pounds_taken,
                            avg_visits_per_day=avg_visits_per_day,
                            most_visited_day=most_visited_day,
                            avg_visits_per_user=avg_visits_per_user,
                            avg_lbs_per_day=avg_lbs_per_day,
-                           highest_num_of_visits=highest_num_of_visits)
+                           total_clothes_taken=total_clothes_taken,
+                           highest_num_of_visits=highest_num_of_visits,
+                           pounds_per_day=pounds_per_day,
+                           )
 
 
 #csv data file download - code help from https://stackoverflow.com/questions/33766499/flask-button-to-save-table-from-query-as-csv
 @app.route('/download_csv')
 def download_csv():
     #swipe data query
-    student_inputs = StudentInput.query.all()
+    student_inputs = StudentInputFull.query.all()
 
     #stores it to memory
     si = StringIO()
     writer = csv.writer(si)
     
     #csv header
-    writer.writerow(['student_id', 'pounds_taken', 'timestamp'])
+    writer.writerow(['student_id', 'pounds_taken', 'clothes_taken', 'timestamp'])
     
     # data to rows in csv file
     for input in student_inputs:
-        writer.writerow([input.student_id, input.pounds_taken, input.timestamp])
+        writer.writerow([input.student_id, input.pounds_taken, input.clothes_taken, input.timestamp])
 
     #flask response as a csv file to donwload
     response = Response(si.getvalue(), content_type='text/csv')
@@ -255,4 +279,3 @@ def volunteer_signup():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
