@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-
 <div class="dashboard-container d-flex">
     <!-- Filter Section -->
     <div class="filter-section p-3 border-end" style="width: 200px;">
@@ -50,7 +49,47 @@
                     {% endfor %}
                 </ul>
             </section>
+
+            <div class="chart">
+            <h2>Food and Clothes for Days</h2>
+            <canvas id="myChart" width="500px"></canvas>
+        </div>
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const poundsData = {{ pounds_per_day | tojson }}; 
+  const labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  const dataValues = labels.map(day => poundsData[day] || 0);
+
+  //const ctx = document.getElementById('myChart').getContext('2d');
+
+  new Chart(document.getElementById('myChart'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Pounds Taken',
+          data: dataValues,
+          backgroundColor: 'rgba(75, 192, 192, 0.6)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
 {% endblock %}
+

@@ -14,11 +14,14 @@
                 poundsTaken.readOnly = false;
                 clothesTaken.disabled = false;
                 clothesTaken.readOnly = false;
+                studentIDInput.setCustomValidity("");
             } else {
                 poundsTaken.disabled = true;
                 poundsTaken.readOnly = true;
                 clothesTaken.disabled = true;
                 clothesTaken.readOnly = true;
+                studentIDInput.setCustomValidity("Please enter a valid 7-digit student ID."); // ⚠️ Still invalid
+
             }
         }
 
@@ -66,7 +69,7 @@
             const clothesValue = parseInt(clothesTaken.value, 10);
 
             studentID.value = studentID.value.replace(/\D/g, '').slice(-7);
-
+            console.log("Student ID after cleaning: '" + studentID.value+"'"); 
             if (studentID.value.length !== 7) {
                 studentID.setCustomValidity("Please enter a valid 7-digit student ID.");
                 studentID.reportValidity();

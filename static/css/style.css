@@ -138,10 +138,14 @@ body::before {
     margin-bottom: 4rem;
     margin-left: 2rem;
     margin-right: 2rem;
+    padding-top: 0.5rem;
     align-items: center;
     width: 600px;
+    border-radius: 15px;
+    text-align: center;
 
 }
+
 
 .meet-team {
     text-align: center;
@@ -215,7 +219,7 @@ body::before {
 }
 
 .chart{
-    background-color: black;
+    background-color: white;
 }
 
 .container mt-5{
@@ -545,4 +549,3 @@ body::before {
         height: 100%;
     }
 }
-
