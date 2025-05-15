@@ -10,3 +10,4 @@
 \outl0\strokewidth0 \strokec3 Flask\
 Flask-SQLAlchemy\
 psycopg2-binary}
+python-dotenv
