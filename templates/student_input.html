@@ -20,7 +20,7 @@
                 poundsTaken.readOnly = true;
                 clothesTaken.disabled = true;
                 clothesTaken.readOnly = true;
-                studentIDInput.setCustomValidity("Please enter a valid 7-digit student ID."); // ⚠️ Still invalid
+                studentIDInput.setCustomValidity("Please enter a valid 7-digit student ID."); 
 
             }
         }
@@ -78,7 +78,7 @@
                 studentID.setCustomValidity("");
             }
 
-            if (isNaN(poundsValue) || poundsValue < 1 || poundsValue > 100) {
+            if (isNaN(poundsValue) || poundsValue < 0 || poundsValue > 100) {
                 poundsTaken.setCustomValidity("Please enter a valid number of pounds between 1 and 100.");
                 poundsTaken.reportValidity();
                 return false;
