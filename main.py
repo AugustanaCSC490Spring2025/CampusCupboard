@@ -50,6 +50,14 @@ class Volunteer(db.Model):
     shift = db.Column(db.String, nullable=False)
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
 
+# New class for inventory feed items
+class InventoryFeedItem(db.Model):
+    __tablename__ = 'inventory_feed_items'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    filename = db.Column(db.String, nullable=True)
+    description = db.Column(db.String, nullable=True)
+    timestamp = db.Column(db.String, nullable=False)
+
 with app.app_context():
     db.create_all()
 
@@ -70,8 +78,8 @@ def inventory():
         # Redirect to the same page to prevent form resubmission
         return redirect(url_for('inventory'))
 
-    # Pass both messages and uploaded images to the template
-    return render_template('inventoryFeed.html', messages=messages, uploaded_images=uploaded_images)
+    feed_items = InventoryFeedItem.query.order_by(InventoryFeedItem.id.desc()).all()
+    return render_template('inventoryFeed.html', messages=messages, uploaded_images=feed_items)
 
 ALLOWED_EXTENSIONS = {'png', 'heic', 'jpg', 'jpeg'}
  
@@ -80,31 +88,37 @@ def allowed_file(filename):
  
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
-    if 'image' not in request.files:
-        return redirect(url_for('inventory'))
-
-    file = request.files['image']
+    file = request.files.get('image')
     description = request.form.get('description')
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    if file and allowed_file(file.filename):
+    if file and file.filename and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        # Add the current timestamp
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        # Prepend the new image to the list
-        uploaded_images.insert(0, {'filename': filename, 'description': description, 'timestamp': timestamp})
+    else:
+        filename = None
+
+    if description or filename:
+        new_item = InventoryFeedItem(
+            filename=filename if filename else '',
+            description=description,
+            timestamp=timestamp
+        )
+        db.session.add(new_item)
+        db.session.commit()
 
     return redirect(url_for('inventory'))
 
 @app.route('/delete_image/<int:image_id>', methods=['POST'])
 def delete_image(image_id):
-    # Find the image by its index in the uploaded_images list
-    if 0 <= image_id < len(uploaded_images):
-        image = uploaded_images.pop(image_id)  # Remove the image from the list
-        # Delete the file from the filesystem
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], image['filename'])
-        if os.path.exists(file_path):
-            os.remove(file_path)
+    item = InventoryFeedItem.query.get(image_id)
+    if item:
+        if item.filename:
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], item.filename)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        db.session.delete(item)
+        db.session.commit()
     return redirect(url_for('inventory'))
 
 @app.route('/volunteer')
@@ -175,45 +189,47 @@ def student_input():
 
 @app.route('/data_dashboard', methods=['GET', 'POST']) 
 def data_dashboard():
-    #start and end dates for filter
-    #format: YYYY-MM-DD
+    # Start and end dates for filter
+    # Format: YYYY-MM-DD
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
 
-    #filter the data
+    # Filter the data
     if start_date and end_date:
         start_time = datetime.strptime(start_date, '%Y-%m-%d').replace(tzinfo=UTC_TZ)
         end_time = datetime.strptime(end_date, '%Y-%m-%d').replace(tzinfo=UTC_TZ) + timedelta(days=1)
         student_inputs = StudentInputFull.query.filter(StudentInputFull.timestamp >= start_time, StudentInputFull.timestamp < end_time).all()
     else:
-        #default of full query of data
+        # Default to full query of data
         student_inputs = StudentInputFull.query.all()
 
-    # student ID logic
-    distinct_student_count = db.session.query(StudentInputFull.student_id).distinct().count()
-    total_student_count = db.session.query(StudentInputFull.student_id).count()
-    avg_visits_per_user = round(total_student_count / distinct_student_count, 2)
+    # Student ID logic
+    distinct_student_count = db.session.query(db.func.count(db.distinct(StudentInputFull.student_id))).scalar()
+    total_student_count = len(student_inputs)
 
-    # pounds per day (Monday through Friday)
+    # Handle division by zero for avg_visits_per_user
+    avg_visits_per_user = round(total_student_count / distinct_student_count, 2) if distinct_student_count > 0 else 0
+
+    # Pounds per day (Monday through Friday)
     weekday_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    pounds_per_day = {day: 0 for day in weekday_names[:5]}  #initialize Monday-Friday with 0
+    pounds_per_day = {day: 0 for day in weekday_names[:5]}  # Initialize Monday-Friday with 0
     for swipe in student_inputs:
-        day_of_week = swipe.timestamp.weekday() #day of week starts with 0
-        if day_of_week < 5:  #monday - friday
+        day_of_week = swipe.timestamp.weekday()  # Day of week starts with 0
+        if day_of_week < 5:  # Monday - Friday
             day_name = weekday_names[day_of_week]
             pounds_per_day[day_name] += swipe.pounds_taken
 
-    #total pounds taken
+    # Total pounds taken
     total_pounds_taken = sum(swipe.pounds_taken for swipe in student_inputs)
     total_pounds_taken = round(total_pounds_taken, 2)
 
-    #average pounds per day
-    avg_lbs_per_day = round(total_pounds_taken / len(pounds_per_day), 2) if pounds_per_day else 0
+    # Handle division by zero for avg_lbs_per_day
+    avg_lbs_per_day = round(total_pounds_taken / len(pounds_per_day), 2) if len(pounds_per_day) > 0 else 0
 
-    #clothing data
+    # Clothing data
     total_clothes_taken = sum(swipe.clothes_taken for swipe in student_inputs)
 
-    #for html returns
+    # For HTML returns
     return render_template('data_dashboard.html',
                            total_student_count=total_student_count, 
                            distinct_student_count=distinct_student_count, 
