@@ -6,17 +6,13 @@
         <h1 class="photo-title">Live Inventory Feed</h1>
         
         {% if session.get('admin_logged_in') %}
+        <!-- Update Button -->
         <div class="admin-tools">
-            <button type="button" class="update-btn" onclick="showUploadOptions()">Update</button>
+            <button type="button" class="update-btn" onclick="triggerFileInput()">Update</button>
         </div>
 
-        <div id="uploadOptions" class="hidden">
-            <button type="button" onclick="openCamera()">Take a Photo</button>
-            <button type="button" onclick="openGallery()">Choose from Gallery</button>
-        </div>
-
-        <input type="file" name="image" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
-        <input type="file" name="image" id="galleryInput" accept="image/*" style="display: none;">
+        <!-- Single file input for both camera and gallery -->
+        <input type="file" name="image" id="fileInput" accept="image/*" style="display: none;">
 
         <div id="uploadFormContainer" class="hidden">
             <form id="uploadForm" method="POST" action="{{ url_for('upload_image') }}" enctype="multipart/form-data">
@@ -51,18 +47,8 @@
 </div>
 
 <script>
-    function showUploadOptions() {
-        // Toggle visibility of the upload options
-        const uploadOptions = document.getElementById('uploadOptions');
-        uploadOptions.classList.toggle('hidden');
-    }
-
-    function openCamera() {
-        document.getElementById('cameraInput').click();
-    }
-
-    function openGallery() {
-        document.getElementById('galleryInput').click();
+    function triggerFileInput() {
+        document.getElementById('fileInput').click();
     }
 </script>
 
@@ -86,6 +72,19 @@
     }
 
     #uploadOptions button:hover {
+        background-color: #0056b3;
+    }
+
+    .update-btn {
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .update-btn:hover {
         background-color: #0056b3;
     }
 </style>
