@@ -138,7 +138,7 @@ body::before {
     margin-bottom: 4rem;
     margin-left: 2rem;
     margin-right: 2rem;
-    padding-top: 0.5rem;
+    padding: 1rem; 
     align-items: center;
     width: 600px;
     border-radius: 15px;
@@ -222,9 +222,14 @@ body::before {
     background-color: white;
 }
 
-.container mt-5{
-    margin: 4rem;
+#volunteer-card {
+    padding: 3rem;
+    align-items: center;
+    text-align: center;
+    border-radius: 15px;
 }
+
+
 /* About page styles */
 .about-section {
     padding: 3rem 0;
