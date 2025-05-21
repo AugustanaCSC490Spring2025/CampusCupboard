@@ -50,6 +50,14 @@ class Volunteer(db.Model):
     shift = db.Column(db.String, nullable=False)
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
 
+# New class for inventory feed items
+class InventoryFeedItem(db.Model):
+    __tablename__ = 'inventory_feed_items'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    filename = db.Column(db.String, nullable=True)
+    description = db.Column(db.String, nullable=True)
+    timestamp = db.Column(db.String, nullable=False)
+
 with app.app_context():
     db.create_all()
 
@@ -70,8 +78,8 @@ def inventory():
         # Redirect to the same page to prevent form resubmission
         return redirect(url_for('inventory'))
 
-    # Pass both messages and uploaded images to the template
-    return render_template('inventoryFeed.html', messages=messages, uploaded_images=uploaded_images)
+    feed_items = InventoryFeedItem.query.order_by(InventoryFeedItem.id.desc()).all()
+    return render_template('inventoryFeed.html', messages=messages, uploaded_images=feed_items)
 
 ALLOWED_EXTENSIONS = {'png', 'heic', 'jpg', 'jpeg'}
  
@@ -80,31 +88,37 @@ def allowed_file(filename):
  
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
-    if 'image' not in request.files:
-        return redirect(url_for('inventory'))
-
-    file = request.files['image']
+    file = request.files.get('image')
     description = request.form.get('description')
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    if file and allowed_file(file.filename):
+    if file and file.filename and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        # Add the current timestamp
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        # Prepend the new image to the list
-        uploaded_images.insert(0, {'filename': filename, 'description': description, 'timestamp': timestamp})
+    else:
+        filename = None
+
+    if description or filename:
+        new_item = InventoryFeedItem(
+            filename=filename if filename else '',
+            description=description,
+            timestamp=timestamp
+        )
+        db.session.add(new_item)
+        db.session.commit()
 
     return redirect(url_for('inventory'))
 
 @app.route('/delete_image/<int:image_id>', methods=['POST'])
 def delete_image(image_id):
-    # Find the image by its index in the uploaded_images list
-    if 0 <= image_id < len(uploaded_images):
-        image = uploaded_images.pop(image_id)  # Remove the image from the list
-        # Delete the file from the filesystem
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], image['filename'])
-        if os.path.exists(file_path):
-            os.remove(file_path)
+    item = InventoryFeedItem.query.get(image_id)
+    if item:
+        if item.filename:
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], item.filename)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        db.session.delete(item)
+        db.session.commit()
     return redirect(url_for('inventory'))
 
 @app.route('/volunteer')

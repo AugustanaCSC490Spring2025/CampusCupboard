@@ -12,8 +12,8 @@
         
         <div id="uploadFormContainer" class="hidden">
             <form id="uploadForm" method="POST" action="{{ url_for('upload_image') }}" enctype="multipart/form-data">
-                <input type="file" name="image" id="imageInput" accept="image/*" capture="environment" required>
-                <input type="text" name="description" id="descriptionInput" placeholder="Enter image description..." required>
+                <input type="file" name="image" id="imageInput" accept="image/*" capture="environment">
+                <input type="text" name="description" id="descriptionInput" placeholder="Enter image description..." >
                 <button type="submit" class="confirm-btn">Upload</button>
             </form>
         </div>
@@ -23,7 +23,9 @@
             <div class="uploaded-images">
                 {% for image in uploaded_images %}
                 <div class="image-container">
+                    {% if image.filename %}
                     <img src="{{ url_for('static', filename='images/' + image.filename) }}" alt="Uploaded Image">
+                    {% endif %}
                     <div class="image-description">
                         <p>{{ image.description }}</p>
                         <small class="image-timestamp">Uploaded on: {{ image.timestamp }}</small>
@@ -39,14 +41,4 @@
         </div>
     </div>
 </div>
-<script>
-    function showUploadForm() {
-        const uploadFormContainer = document.getElementById('uploadFormContainer');
-        if (uploadFormContainer) {
-            uploadFormContainer.classList.toggle('hidden'); // Toggle visibility of the upload form
-        } else {
-            console.error("Upload form container not found.");
-        }
-    }
-</script>
 {% endblock %}
