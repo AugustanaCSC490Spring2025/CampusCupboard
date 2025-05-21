@@ -12,7 +12,7 @@
         
         <div id="uploadFormContainer" class="hidden">
             <form id="uploadForm" method="POST" action="{{ url_for('upload_image') }}" enctype="multipart/form-data">
-                <input type="file" name="image" id="imageInput" accept="image/*" capture="environment">
+                <input type="file" name="image" id="imageInput" accept="image/*">
                 <input type="text" name="description" id="descriptionInput" placeholder="Enter image description..." >
                 <button type="submit" class="confirm-btn">Upload</button>
             </form>
