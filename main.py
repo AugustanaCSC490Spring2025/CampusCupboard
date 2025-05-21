@@ -19,7 +19,6 @@ app.config['UPLOAD_FOLDER'] = os.path.join('static', 'images')
 
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
-messages = []  # List to store messages
 uploaded_images = []  # List to store dictionaries with 'filename' and 'description'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
@@ -69,17 +68,8 @@ def index():
 #inventory feed route
 @app.route('/inventory', methods=['GET', 'POST'])
 def inventory():
-    if request.method == 'POST':
-        # Handle message submission
-        message = request.form.get('message')
-        if message:
-            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            messages.append({'text': message, 'timestamp': timestamp})
-        # Redirect to the same page to prevent form resubmission
-        return redirect(url_for('inventory'))
-
     feed_items = InventoryFeedItem.query.order_by(InventoryFeedItem.id.desc()).all()
-    return render_template('inventoryFeed.html', messages=messages, uploaded_images=feed_items)
+    return render_template('inventoryFeed.html', uploaded_images=feed_items)
 
 ALLOWED_EXTENSIONS = {'png', 'heic', 'jpg', 'jpeg'}
  
