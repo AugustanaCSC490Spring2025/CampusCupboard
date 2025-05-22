@@ -8,11 +8,8 @@
         {% if session.get('admin_logged_in') %}
         <!-- Update Button -->
         <div class="admin-tools">
-            <button type="button" class="update-btn" onclick="triggerFileInput()">Update</button>
+            <button type="button" class="update-btn" onclick="showUploadForm()">Update</button>
         </div>
-
-        <!-- Single file input for both camera and gallery -->
-        <input type="file" name="image" id="fileInput" accept="image/*" style="display: none;">
 
         <div id="uploadFormContainer" class="hidden">
             <form id="uploadForm" method="POST" action="{{ url_for('upload_image') }}" enctype="multipart/form-data">
@@ -45,10 +42,12 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
 <script>
-    function triggerFileInput() {
-        document.getElementById('fileInput').click();
+    function showUploadForm() {
+        const formContainer = document.getElementById('uploadFormContainer');
+        formContainer.classList.toggle('hidden');
     }
 </script>
 
@@ -88,4 +87,3 @@
         background-color: #0056b3;
     }
 </style>
-{% endblock %}
