@@ -11,7 +11,10 @@
             <label for="end_date" class="form-label">End Date:</label>
             <input type="date" id="end_date" name="end_date" class="form-control mb-3" value="{{ end_date }}">
 
-            <button type="submit" class="btn btn-primary w-100">Apply</button>
+            <button type="submit" class="btn btn-primary w-100 mb-2">Apply</button>
+        </form>
+        <form method="GET" action="{{ url_for('download_data') }}">
+            <button type="submit" class="btn btn-secondary w-100">Download All Data</button>
         </form>
     </div>
 
@@ -64,8 +67,6 @@
   const poundsData = {{ pounds_per_day | tojson }}; 
   const labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const dataValues = labels.map(day => poundsData[day] || 0);
-
-  //const ctx = document.getElementById('myChart').getContext('2d');
 
   new Chart(document.getElementById('myChart'), {
     type: 'bar',

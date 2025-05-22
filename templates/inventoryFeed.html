@@ -6,10 +6,14 @@
         <h1 class="photo-title">Live Inventory Feed</h1>
         
         {% if session.get('admin_logged_in') %}
+        <!-- Update Button -->
         <div class="admin-tools">
-            <button type="button" class="update-btn" onclick="showUploadForm()">Update</button>
+            <button type="button" class="update-btn" onclick="triggerFileInput()">Update</button>
         </div>
-        
+
+        <!-- Single file input for both camera and gallery -->
+        <input type="file" name="image" id="fileInput" accept="image/*" style="display: none;">
+
         <div id="uploadFormContainer" class="hidden">
             <form id="uploadForm" method="POST" action="{{ url_for('upload_image') }}" enctype="multipart/form-data">
                 <input type="file" name="image" id="imageInput" accept="image/*">
@@ -41,4 +45,47 @@
         </div>
     </div>
 </div>
+
+<script>
+    function triggerFileInput() {
+        document.getElementById('fileInput').click();
+    }
+</script>
+
+<style>
+    .hidden {
+        display: none;
+    }
+
+    #uploadOptions {
+        margin-top: 10px;
+    }
+
+    #uploadOptions button {
+        margin: 5px;
+        padding: 10px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #uploadOptions button:hover {
+        background-color: #0056b3;
+    }
+
+    .update-btn {
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .update-btn:hover {
+        background-color: #0056b3;
+    }
+</style>
 {% endblock %}
