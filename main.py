@@ -19,8 +19,6 @@ app.config['UPLOAD_FOLDER'] = os.path.join('static', 'images')
 
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
-uploaded_images = []  # List to store dictionaries with 'filename' and 'description'
-
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
