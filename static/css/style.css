@@ -146,6 +146,17 @@ body::before {
 
 }
 
+#volunteer-card {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding: 2rem auto;
+}
+
+#volunteer-card .card {
+    height: 100%;
+    border-radius: 20px; 
+}
 
 .meet-team {
     text-align: center;
