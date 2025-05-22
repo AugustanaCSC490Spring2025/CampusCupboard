@@ -79,7 +79,7 @@
             }
 
             if (isNaN(poundsValue) || poundsValue < 0 || poundsValue > 100) {
-                poundsTaken.setCustomValidity("Please enter a valid number of pounds between 1 and 100.");
+                poundsTaken.setCustomValidity("Please enter a valid number of pounds between 0 and 100.");
                 poundsTaken.reportValidity();
                 return false;
             } else {
@@ -92,7 +92,19 @@
                 return false;
             } else {
                 clothesTaken.setCustomValidity("");
-        }
+            }
+
+            // New check: both pounds and clothes cannot be zero
+            if ((poundsValue === 0 || isNaN(poundsValue)) && (clothesValue === 0 || isNaN(clothesValue))) {
+                poundsTaken.setCustomValidity("You must take at least one item or weigh something.");
+                poundsTaken.reportValidity();
+                clothesTaken.setCustomValidity("You must take at least one item or weigh something.");
+                clothesTaken.reportValidity();
+                return false;
+            } else {
+                poundsTaken.setCustomValidity("");
+                clothesTaken.setCustomValidity("");
+            }
 
             return true;
         }
@@ -113,9 +125,9 @@
                 </div>
                 <div class="mb-3">
                     <label for="poundsTaken" class="form-label">Pounds taken</label>
-                    <input type="number" class="form-control" id="poundsTaken" name="poundsTaken" required disabled readonly min="1" max="100" step="0.01">
+                    <input type="number" class="form-control" id="poundsTaken" name="poundsTaken" required disabled readonly min="0" max="100" step="0.01">
                     <div class="invalid-feedback">
-                        Please enter a valid number of pounds between 1 and 1000.
+                        Please enter a valid number of pounds between 0 and 1000.
                     </div>
                 </div>
                 <div class="mb-3">
