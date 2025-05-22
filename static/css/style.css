@@ -222,13 +222,6 @@ body::before {
     background-color: white;
 }
 
-#volunteer-card {
-    padding: 3rem;
-    align-items: center;
-    text-align: center;
-    border-radius: 15px;
-}
-
 
 /* About page styles */
 .about-section {
