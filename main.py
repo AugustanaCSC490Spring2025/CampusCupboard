@@ -36,7 +36,7 @@ class StudentInputFull(db.Model):
     student_id = db.Column(db.Integer, nullable=False)
     pounds_taken = db.Column(db.Float, nullable=False) 
     clothes_taken = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
+    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(CENTRAL_TZ))
 
 #class to make volunteer table
 class Volunteer(db.Model):
@@ -45,7 +45,7 @@ class Volunteer(db.Model):
     name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
     shift = db.Column(db.String, nullable=False)
-    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(UTC_TZ))
+    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(CENTRAL_TZ))
 
 # New class for inventory feed items
 class InventoryFeedItem(db.Model):
@@ -198,14 +198,16 @@ def data_dashboard():
     # Handle division by zero for avg_visits_per_user
     avg_visits_per_user = round(total_student_count / distinct_student_count, 2) if distinct_student_count > 0 else 0
 
-    # Pounds per day (Monday through Friday)
+    # Pounds and clothes per day (Monday through Friday)
     weekday_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    pounds_per_day = {day: 0 for day in weekday_names[:5]}  # Initialize Monday-Friday with 0
+    pounds_per_day = {day: 0 for day in weekday_names[:5]}  # Monday-Friday
+    clothes_per_day = {day: 0 for day in weekday_names[:5]}  # Monday-Friday
     for swipe in student_inputs:
-        day_of_week = swipe.timestamp.weekday()  # Day of week starts with 0
-        if day_of_week < 5:  # Monday - Friday
+        day_of_week = swipe.timestamp.weekday()
+        if day_of_week < 5:
             day_name = weekday_names[day_of_week]
             pounds_per_day[day_name] += swipe.pounds_taken
+            clothes_per_day[day_name] += swipe.clothes_taken
 
     # Total pounds taken
     total_pounds_taken = sum(swipe.pounds_taken for swipe in student_inputs)
@@ -226,6 +228,7 @@ def data_dashboard():
                            avg_lbs_per_day=avg_lbs_per_day,
                            total_clothes_taken=total_clothes_taken,
                            pounds_per_day=pounds_per_day,
+                           clothes_per_day=clothes_per_day,
                            start_date=start_date,
                            end_date=end_date)
 

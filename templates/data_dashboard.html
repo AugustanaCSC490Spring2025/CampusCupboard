@@ -60,13 +60,22 @@
         </div>
     </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<!-- JSON Data injected safely -->
+<script id="pounds-data" type="application/json">
+  {{ pounds_per_day | tojson }}
+</script>
+<script id="clothes-data" type="application/json">
+  {{ clothes_per_day | tojson }}
+</script>
+
 <script>
-  const poundsData = {{ pounds_per_day | tojson }}; 
+  const poundsData = JSON.parse(document.getElementById('pounds-data').textContent);
+  const clothesData = JSON.parse(document.getElementById('clothes-data').textContent);
   const labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const dataValues = labels.map(day => poundsData[day] || 0);
+  const clothesValues = labels.map(day => clothesData[day] || 0);
 
   new Chart(document.getElementById('myChart'), {
     type: 'bar',
@@ -78,6 +87,13 @@
           data: dataValues,
           backgroundColor: 'rgba(75, 192, 192, 0.6)',
           borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        },
+        {
+          label: 'Clothes Taken',
+          data: clothesValues,
+          backgroundColor: 'rgba(255, 165, 79, 0.5)', // Cream orange, semi-opaque
+          borderColor: 'rgba(255, 165, 79, 1)',
           borderWidth: 1
         }
       ]
@@ -93,4 +109,3 @@
   });
 </script>
 {% endblock %}
-
