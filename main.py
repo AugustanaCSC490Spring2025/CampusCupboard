@@ -275,5 +275,41 @@ def volunteer_signup():
         return redirect(url_for('volunteer_signup'))
     return render_template('volunteer_signup.html')
 
+@app.route('/download_data', methods=['GET'])
+def download_data():
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+
+    # Filter data if dates are provided
+    if start_date and end_date:
+        start_time = datetime.strptime(start_date, '%Y-%m-%d').replace(tzinfo=UTC_TZ)
+        end_time = datetime.strptime(end_date, '%Y-%m-%d').replace(tzinfo=UTC_TZ) + timedelta(days=1)
+        student_inputs = StudentInputFull.query.filter(
+            StudentInputFull.timestamp >= start_time,
+            StudentInputFull.timestamp < end_time
+        ).all()
+        filename = f"filtered_data_{start_date}_to_{end_date}.csv"
+    else:
+        student_inputs = StudentInputFull.query.all()
+        filename = "all_data.csv"
+
+    # Prepare CSV
+    si = StringIO()
+    cw = csv.writer(si)
+    # Write header
+    cw.writerow(['student_id', 'pounds_taken', 'clothes_taken', 'timestamp'])
+    # Write data
+    for entry in student_inputs:
+        cw.writerow([entry.student_id, entry.pounds_taken, entry.clothes_taken, entry.timestamp])
+
+    output = si.getvalue()
+    si.close()
+
+    return Response(
+        output,
+        mimetype="text/csv",
+        headers={"Content-Disposition": f"attachment;filename={filename}"}
+    )
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
