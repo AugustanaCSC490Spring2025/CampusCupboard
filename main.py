@@ -24,9 +24,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-CENTRAL_TZ = ZoneInfo("America/Chicago")
-UTC_TZ = ZoneInfo("UTC")
-
 app.permanent_session_lifetime = timedelta(minutes=2)  # Set session timeout to 30 minutes
  
 #class to make table for id swipe and now with clothes taken
@@ -36,7 +33,7 @@ class StudentInputFull(db.Model):
     student_id = db.Column(db.Integer, nullable=False)
     pounds_taken = db.Column(db.Float, nullable=False) 
     clothes_taken = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(CENTRAL_TZ))
+    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now())
 
 #class to make volunteer table
 class Volunteer(db.Model):
@@ -45,7 +42,7 @@ class Volunteer(db.Model):
     name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
     shift = db.Column(db.String, nullable=False)
-    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(CENTRAL_TZ))
+    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now())
 
 # New class for inventory feed items
 class InventoryFeedItem(db.Model):
